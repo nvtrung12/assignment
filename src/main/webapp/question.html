@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Demo text extraction</title>
+
+<script	src="///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet"
+	type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+</head>
+
+<body>
+	<div class="metaData topcorner" id="metaData"></div>
+	<div class="mainpart">
+		<div class="center" style="min-height: 400px; height: 400px">
+			<div id="header">
+				<a href="./index.html">CBook Generation</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <a href="./merge">Extraction
+					Combination</a> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <a href="./filter.jsp">Visualization</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+			</div>
+
+			<div class="border">
+				<h2 class="textcenter">Question virtualization</h2>
+			</div>
+			<br /> <br />
+			<div class="alignleft">
+				<form class="form" id="f1" name="f1" method="post" enctype="multipart/form-data">
+					<div>
+						<label>Cbook</label>
+						<input type="file" name="file" id="cbookFile" value="" /> 
+						<label id="cbookUploaded"></label>
+					</div>
+					<div>
+						<label>Question</label><input type="text" name="question" id="question" value="" />
+					</div>
+					<br />
+					<div class="submitbtn">
+						<input type="submit" style="margin-left: 60px;" />
+					</div>
+				</form>
+
+				<br />
+				<div>Output: <span id="outputMessage"></span></div>
+			</div>
+		</div>
+
+
+		<div class="ConceptVisualization">
+			<div id="mynetwork"></div>
+			<div id="infoDiv" class="graphInfo"></div>
+		</div>
+		
+		<div id="nu"></div>
+	</div>
+
+	<script src="js/semanticGraph.js"></script>
+	<script src="js/jsupload.js"></script>
+	<script src="js/question.js"></script>
+	<script src="js/header.js"></script>
+
+</body>
+</html>

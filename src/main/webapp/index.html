@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Demo text extraction</title>
+
+<script	src="///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet"
+	type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+</head>
+
+<body>
+	<div class="metaData topcorner" id="metaData"></div>
+	<div class="mainpart">
+		<div class="center">
+			<div id="header">
+				<a href="./index.html">CBook Generation</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <a href="./merge">Extraction
+					Combination</a> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <a href="./filter.jsp">Visualization</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+			</div>
+
+			<div class="border">
+				<h2 class="textcenter">CBook Generation</h2>
+			</div>
+			<br /> <br />
+			<div class="alignleft">
+				<form class="form" id="f1" name="f1" method="post" enctype="multipart/form-data">
+					<div>
+						<label>Ebook (pdf/doc/docx)</label>
+						<input type="file" name="file" id="ebookFile" value="" /> 
+						<label id="ebookUploaded"></label>
+					</div>
+					<div>
+						<label>Equivalence list</label> <input type="file" name="equivalencefile" />
+					</div>
+					<div>
+						<label>Phrase list</label> <input type="file" name="phrasefile" id="phraseFile" />
+						<label id="phraseListUploaded"></label> 
+						<a href="download?fileName=defaults/Phrase_default.docx">Phrase_default.docx</a>
+					</div>
+					<div>
+						<label>Ignored concepts</label><input type="file" name="stopwordfile" id="stopwordfile" />
+						<label id="ignoredConceptsUploaded"></label> 
+						<a href="download?fileName=defaults/Ignored_concept_default.txt">Ignored_concept_default.txt</a>
+					</div>
+					<div>
+						<label>Book title</label><input type="text" name="book_title" id="book_title" value="" />
+					</div>
+					<div>
+						<label>Author</label><input type="text" name="author" id="author" value="" />
+					</div>
+					<div>
+						<label>Publisher</label><input type="text" name="publisher" id="publisher" value="" />
+					</div>
+					<div>
+						<label>ISBN</label><input type="text" name="isbn" id="isbn" value="" />
+					</div>
+					<div>
+						<label>Date of publication</label><input type="text" name="date_of_publication" value="" />
+					</div>
+					<div>
+						<label>Collection area</label><input type="text"
+							name="colection_area" id="colection_area"
+							value="" />
+					</div>
+					<div>
+						<label>Collection subarea</label><input type="text"
+							name="colection_subarea" id="colection_subarea"
+							value="" />
+					</div>
+					<div>
+						<label>Date of creation</label><input type="text"
+							name="date_of_creation" id="date_of_creation"
+							value="" />
+					</div>
+
+					<br />
+					<div class="submitbtn">
+						<input type="submit" style="margin-left: 60px;" />
+					</div>
+				</form>
+
+
+				<br />
+				<div>Output: <span id="outputMessage"></span></div>
+				<div>
+					<a href="download?fileName=" id="downloadLink">Concept File</a>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="ConceptVisualization">
+			<div id="mynetwork"></div>
+			<div id="infoDiv" class="graphInfo"></div>
+		</div>
+		
+		<div id="nu"></div>
+	</div>
+
+	<script src="js/semanticGraph.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/jsupload.js"></script>
+	<script src="js/main.js"></script>
+	<script src="js/header.js"></script>
+
+</body>
+</html>
