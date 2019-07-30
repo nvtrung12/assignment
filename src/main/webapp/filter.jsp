@@ -5,9 +5,9 @@
 
 <script
 	src="///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
+<script type="text/javascript" src="vis/dist/vis.js"></script>
 
-<link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet"
+<link href="vis/dist/vis-network.min.css" rel="stylesheet"
 	type="text/css" />
 <link rel="stylesheet" type="text/css" href="css/autocomplete.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
