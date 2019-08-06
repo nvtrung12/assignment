@@ -8,7 +8,7 @@
 <script src="///cdn.jsdelivr.net/npm/vue"></script>
 <script type="text/javascript" src="vis/dist/vis.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
+<script type="text/javascript" src="vis/dist/vis-network.min.js"></script>
 <link href="vis/dist/vis-network.min.css" rel="stylesheet"
 	type="text/css" />
 

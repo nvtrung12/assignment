@@ -65,6 +65,7 @@ public class GraphApi extends HttpServlet {
 
 		// get from query
 		String fileName = request.getParameter("fileName");
+		fileName = fileName.substring(fileName.lastIndexOf("\\"));
 		logger.debug("fileName: " + fileName);
 		String graphType = request.getParameter("graphType");
 		logger.debug("graphType: " + graphType);
@@ -77,7 +78,7 @@ public class GraphApi extends HttpServlet {
 		}
 
 		// convert to full path
-		fileName = String.format("%s%s", appPath, fileName);
+		fileName = String.format("%s%s", downloadFolder, fileName);
 
 		try {
 

@@ -46,8 +46,8 @@ public class QueryProgress extends HttpServlet {
 		String json = null;
 		try {
 			HttpSession sess = req.getSession();
-			int totalSentence = (int) sess.getAttribute("totalSentence");
-			int numProcessed = (int) sess.getAttribute("numProcessed");
+			int totalSentence = sess.getAttribute("totalSentence") != null ? (int) sess.getAttribute("totalSentence") : 1;
+			int numProcessed = sess.getAttribute("numProcessed") != null ? (int) sess.getAttribute("numProcessed") : 0;
 
 			// build json to return
 			json = Json.createObjectBuilder().add("percentage", 100 * numProcessed / totalSentence).build().toString();
