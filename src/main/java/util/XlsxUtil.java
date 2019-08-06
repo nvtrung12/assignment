@@ -35,6 +35,23 @@ public class XlsxUtil {
 	 * @param row_data
 	 * @return
 	 */
+	public static final int MAX_ROW_SHEET = 65534;
+	
+	public static String nextFile(List<String> fileNames, String downloadFolder, String fileNameBase) {
+		if (fileNames == null || fileNames.size() == 0) {
+			String conceptsFileName = String.format("%s.xlsx", fileNameBase + "_1");
+			String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
+			return conceptSfilePath;
+		}
+		String conceptsFileName = String.format("%s.xlsx", fileNameBase + "_" + (fileNames.size() + 1));
+		String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
+		return conceptSfilePath;
+	}
+	
+	public static String getLastFile(List<String> fileNames) {
+		return fileNames.get(fileNames.size() - 1);
+	}
+	
 	public static boolean writeRowXlsx(XSSFSheet sheet, int rowNum, List<Object> row_data) {
 		Row row = sheet.createRow(rowNum);
 		int colNum = 0;
@@ -60,6 +77,7 @@ public class XlsxUtil {
 	 * @return
 	 * @throws IOException
 	 */
+	
 	public static boolean writeXlsx(String filePath, String sheetName, List<List<Object>> row_datas)
 			throws IOException {
 		XSSFWorkbook workbook = new XSSFWorkbook();
@@ -85,6 +103,40 @@ public class XlsxUtil {
 		workbook.write(outputStream);
 		workbook.close();
 
+		return true;
+	}
+	
+	public static boolean writeXlsxMutil(List<String> fileNames, String downloadFolder, String fileNameBase, String sheetName, List<List<Object>> row_datas) throws IOException {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet(sheetName);
+		int rowNum = 0;
+		
+		for (List<Object> row_data : row_datas) {
+			Row row = sheet.createRow(rowNum++);
+			int colNum = 0;
+			for (Object field : row_data) {
+				Cell cell = row.createCell(colNum++);
+				if (field instanceof String) {
+					cell.setCellValue((String) field);
+				} else if (field instanceof Integer) {
+					cell.setCellValue((Integer) field);
+				} else if (field instanceof Float || field instanceof Double) {
+					cell.setCellValue((double) field);
+				}
+			}
+			if (rowNum >= MAX_ROW_SHEET) {
+				FileOutputStream outputStream = new FileOutputStream(getLastFile(fileNames));
+				workbook.write(outputStream);
+				workbook.close();
+				fileNames.add(nextFile(fileNames, downloadFolder, fileNameBase));
+				workbook = new XSSFWorkbook();
+				sheet = workbook.createSheet(sheetName);
+				rowNum = 0;
+			}
+		}
+		FileOutputStream outputStream = new FileOutputStream(getLastFile(fileNames));
+		workbook.write(outputStream);
+		workbook.close();
 		return true;
 	}
 
@@ -136,6 +188,61 @@ public class XlsxUtil {
 		inp.close();
 
 		FileOutputStream fileOut = new FileOutputStream(filePath);
+		workbook.write(fileOut);
+		fileOut.close();
+		workbook.close();
+
+		return true;
+	}
+	
+	public static boolean writeRowsXlsxAppendMuti(List<String> fileNames, String downloadFolder, String fileNameBase, String sheetName, List<List<Object>> row_datas)
+			throws EncryptedDocumentException, InvalidFormatException, IOException {
+
+		InputStream inp = new FileInputStream(getLastFile(fileNames));
+		Workbook workbook = WorkbookFactory.create(inp);
+		Sheet sheet = workbook.getSheet(sheetName);
+		if (null == sheet) {
+			sheet = workbook.createSheet(sheetName);
+		}
+
+		int rows = sheet.getLastRowNum();
+		System.out.println(rows);
+
+		int rowNum;
+		if (rows <= 1)
+			rowNum = rows;
+		else
+			rowNum = rows + 1;
+
+		for (List<Object> row_data : row_datas) {
+			Row row = sheet.createRow(rowNum++);
+			int colNum = 0;
+			for (Object field : row_data) {
+				Cell cell = row.createCell(colNum++);
+				if (field instanceof String) {
+					cell.setCellValue((String) field);
+				} else if (field instanceof Integer) {
+					cell.setCellValue((Integer) field);
+				} else if (field instanceof Float || field instanceof Double) {
+					cell.setCellValue((double) field);
+				} else {
+					cell.setCellValue("");
+				}
+			}
+			
+			if (rowNum >= MAX_ROW_SHEET) {
+				FileOutputStream outputStream = new FileOutputStream(getLastFile(fileNames));
+				workbook.write(outputStream);
+				workbook.close();
+				fileNames.add(nextFile(fileNames, downloadFolder, fileNameBase));
+				workbook = new XSSFWorkbook();
+				sheet = workbook.createSheet(sheetName);
+				rowNum = 0;
+			}
+		}
+		inp.close();
+
+		FileOutputStream fileOut = new FileOutputStream(getLastFile(fileNames));
 		workbook.write(fileOut);
 		fileOut.close();
 		workbook.close();

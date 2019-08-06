@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -118,29 +119,31 @@ public class ParseFileApi extends HttpServlet {
 			String[] tmp2 = null;
 			tmp2 = fileID.split("\\.");
 			String realFileID = tmp2[tmp2.length - 1];
-			String conceptsFileName = String.format("%s.xlsx", realFileID);
-			String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
+			List<String> fileNames = new ArrayList<String>();
+			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
+			//String conceptsFileName = String.format("%s.xlsx", realFileID);
+			//String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
 
 			// get list of concepts
 			List<List<Object>> conceptToWrite = XlsxUtil
 					.convertRowType(((List<Object[]>) ret.get(Constants.ConceptSheetName)));
-			XlsxUtil.writeXlsx(conceptSfilePath, Constants.ConceptSheetName, conceptToWrite);
+			XlsxUtil.writeXlsxMutil(fileNames, downloadFolder , realFileID, Constants.ConceptSheetName, conceptToWrite);
 
 			List<List<Object>> connectionToWrite = XlsxUtil
 					.convertRowType(((List<Object[]>) ret.get(Constants.ConnectionSheetName)));
-			XlsxUtil.writeRowsXlsxAppend(conceptSfilePath, Constants.ConnectionSheetName, connectionToWrite);
+			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder, realFileID, Constants.ConnectionSheetName, connectionToWrite);
 
 			// prepaid to add to list
 			Map<String, Object> metaData = (Map<String, Object>) ret.get(Constants.META_SHEET_NAME);
 			List<List<Object>> metaInfo = this.buildMetaInfo(request, response, metaData);
 
 			// write to file
-			XlsxUtil.writeRowsXlsxAppend(conceptSfilePath, Constants.META_SHEET_NAME, metaInfo);
+			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder, realFileID, Constants.META_SHEET_NAME, metaInfo);
 
 			// build json data for metadata
 			String metaJson = buildMetaJson(metaData);
 
-			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("conceptFile", conceptsFileName)
+			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("conceptFile", XlsxUtil.getLastFile(fileNames))
 					.add("message", "output").add("metaJson", metaJson).build().toString();
 
 			response.getWriter().println(jsonReturn);
