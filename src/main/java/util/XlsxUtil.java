@@ -35,7 +35,7 @@ public class XlsxUtil {
 	 * @param row_data
 	 * @return
 	 */
-	public static final int MAX_ROW_SHEET = 65534;
+	public static final int MAX_ROW_SHEET = 30;
 	
 	public static String nextFile(List<String> fileNames, String downloadFolder, String fileNameBase) {
 		if (fileNames == null || fileNames.size() == 0) {
@@ -290,6 +290,47 @@ public class XlsxUtil {
 
 		workbook.close();
 
+		return ret;
+	}
+	
+	public static List<List<String>> readFolderXlsx(String filePath, String sheetName) throws Exception {
+		List<List<String>> ret = new LinkedList<>();
+		for(File file: new File(filePath).listFiles()) {
+			String fileName = file.getName();
+			if(fileName.endsWith(".xlsx")) {
+				Workbook workbook = WorkbookFactory.create(file, null, true);
+
+				Sheet sheet = workbook.getSheet(sheetName);
+				if (sheet != null) {
+
+					DataFormatter dataFormatter = new DataFormatter();
+					for (Row row : sheet) {
+						short minColIx = row.getFirstCellNum();
+						short maxColIx = row.getLastCellNum();
+
+						// initial list data with empty string
+						List<String> rowList = new LinkedList<String>();
+						for (short cellIndex = 0; cellIndex < maxColIx; ++cellIndex)
+							rowList.add("");
+
+						for (short colIx = minColIx; colIx < maxColIx; colIx++) {
+							Cell cell = row.getCell(colIx);
+							if (cell == null) {
+								continue;
+							} else {
+								String cellValue = dataFormatter.formatCellValue(cell);
+								rowList.set(colIx, cellValue);
+							}
+						}
+						if (rowList.size() > 0)
+							ret.add(rowList);
+					}
+
+					workbook.close();
+				}
+			}
+			
+		}
 		return ret;
 	}
 
