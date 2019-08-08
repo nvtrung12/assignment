@@ -129,6 +129,8 @@ public class ParseFileApi extends HttpServlet {
 					.convertRowType(((List<Object[]>) ret.get(Constants.ConceptSheetName)));
 			XlsxUtil.writeXlsxMutil(fileNames, downloadFolder , realFileID, Constants.ConceptSheetName, conceptToWrite);
 
+			fileNames = new ArrayList<String>();
+			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
 			List<List<Object>> connectionToWrite = XlsxUtil
 					.convertRowType(((List<Object[]>) ret.get(Constants.ConnectionSheetName)));
 			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder, realFileID, Constants.ConnectionSheetName, connectionToWrite);
@@ -137,6 +139,8 @@ public class ParseFileApi extends HttpServlet {
 			Map<String, Object> metaData = (Map<String, Object>) ret.get(Constants.META_SHEET_NAME);
 			List<List<Object>> metaInfo = this.buildMetaInfo(request, response, metaData);
 
+			fileNames = new ArrayList<String>();
+			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
 			// write to file
 			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder, realFileID, Constants.META_SHEET_NAME, metaInfo);
 

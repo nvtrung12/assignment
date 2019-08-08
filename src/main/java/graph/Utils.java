@@ -88,9 +88,11 @@ public class Utils {
 		for (List<String> edge : edges) {
 			String u = edge.get(0);
 			String v = edge.get(1);
-
-			next_node.get(u).add(v);
-			next_node.get(v).add(u);
+			if(next_node.get(u) != null && next_node.get(v) != null) {
+				next_node.get(u).add(v);
+				next_node.get(v).add(u);
+			}
+			
 		}
 
 		OptionalInt tmp = nodes.stream().map(o -> next_node.get(o).size()).mapToInt(Integer::intValue).max();
