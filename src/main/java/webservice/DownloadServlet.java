@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Paths;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,35 +22,26 @@ public class DownloadServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
 		String fileName = request.getParameter("fileName");
-
-		response.setContentType("APPLICATION/OCTET-STREAM");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
 		String appPath = request.getServletContext().getRealPath("/");
 		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
+		downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, fileName);
 		logger.debug(downloadFolder);
-
-		FileInputStream fileInputStream = null;
-		if (fileName.equals(Constants.PHRASE_LIST_FILE_DEFAULT)
-				|| fileName.equals(Constants.IGNORED_CONCEPTS_FILE_DEFAULT)) {
-
-			try {
-				ClassLoader cl = this.getClass().getClassLoader();
-				File file = Paths.get(cl.getResource(fileName).toURI()).toFile();
-				fileInputStream = new FileInputStream(file);
-			} catch (Exception e) {
+		for (File file : new File(downloadFolder).listFiles()) {
+			if (file.getName().endsWith(".xlsx") && file.getName().indexOf(fileName) != -1) {
+				PrintWriter out = response.getWriter();
+				response.setContentType("APPLICATION/OCTET-STREAM");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+				FileInputStream fileInputStream = new FileInputStream(file);
+				int i;
+				while ((i = fileInputStream.read()) != -1) {
+					out.write(i);
+				}
+				fileInputStream.close();
+				out.close();
 			}
-		} else {
-			fileInputStream = new FileInputStream(String.format("%s%s%s", downloadFolder, File.separator, fileName));
 		}
 
-		int i;
-		while ((i = fileInputStream.read()) != -1) {
-			out.write(i);
-		}
-		fileInputStream.close();
-		out.close();
 	}
 }

@@ -120,6 +120,10 @@ public class ParseFileApi extends HttpServlet {
 			tmp2 = fileID.split("\\.");
 			String realFileID = tmp2[tmp2.length - 1];
 			List<String> fileNames = new ArrayList<String>();
+			downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, realFileID);
+			if(!new File(downloadFolder).exists()) {
+				new File(downloadFolder).mkdir();
+			}
 			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
 			//String conceptsFileName = String.format("%s.xlsx", realFileID);
 			//String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
@@ -143,7 +147,7 @@ public class ParseFileApi extends HttpServlet {
 			// build json data for metadata
 			String metaJson = buildMetaJson(metaData);
 
-			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("conceptFile", XlsxUtil.getLastFile(fileNames))
+			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("conceptFile", realFileID)
 					.add("message", "output").add("metaJson", metaJson).build().toString();
 
 			response.getWriter().println(jsonReturn);

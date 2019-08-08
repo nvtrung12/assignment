@@ -12,6 +12,8 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import org.json.simple.JSONObject;
 
+import util.StringUtils;
+
 public class Utils {
 	public static JSONObject create_Node(int id, String label, String group, String title) {
 		JSONObject obj = new JSONObject();
@@ -88,9 +90,10 @@ public class Utils {
 		for (List<String> edge : edges) {
 			String u = edge.get(0);
 			String v = edge.get(1);
-
-			next_node.get(u).add(v);
-			next_node.get(v).add(u);
+			if(!(StringUtils.isNullOrEmpty(u) || StringUtils.isNullOrEmpty(v) || !next_node.containsKey(u) || !next_node.containsKey(v))) {
+				next_node.get(u).add(v);
+				next_node.get(v).add(u);
+			}
 		}
 
 		OptionalInt tmp = nodes.stream().map(o -> next_node.get(o).size()).mapToInt(Integer::intValue).max();

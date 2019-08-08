@@ -1,5 +1,6 @@
 package webservice.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -61,11 +62,9 @@ public class GraphApi extends HttpServlet {
 
 		String appPath = request.getServletContext().getRealPath("/");
 		String uploadFolder = String.format("%s%s", appPath, Constants.UPLOAD_FOLDER);
-		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
 
 		// get from query
 		String fileName = request.getParameter("fileName");
-		fileName = fileName.substring(fileName.lastIndexOf("\\"));
 		logger.debug("fileName: " + fileName);
 		String graphType = request.getParameter("graphType");
 		logger.debug("graphType: " + graphType);
@@ -78,7 +77,7 @@ public class GraphApi extends HttpServlet {
 		}
 
 		// convert to full path
-		fileName = String.format("%s%s", downloadFolder, fileName);
+		String downloadFolder = String.format("%s%s%s", appPath,File.separator, fileName);
 
 		try {
 
@@ -174,6 +173,7 @@ public class GraphApi extends HttpServlet {
 			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("message", message)
 					.add("fileName", fileName).add("grData", graphjs).build().toString();
 
+			logger.debug("MESSAGE " + jsonReturn);
 			response.getWriter().println(jsonReturn);
 		} catch (Exception e) {
 			e.printStackTrace();
