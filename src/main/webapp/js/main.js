@@ -20,10 +20,15 @@ function myDoPost() {
 		dataType : "json",
 
 		success : function(res) {
-			$('#downloadLink').attr('href', 'download?fileName=' + res.conceptFile);
+			var downloadData = "";
+			var jsonData = JSON.parse(res.fileDownload);
+			for (var i = 0; i < jsonData.length; i++) {
+				downloadData = downloadData + ' -- <a href="download?fileName=' + jsonData[i].fileName + '&fileFolder=' + jsonData[i].fileFolder + '" id="downloadLink_' + (i+1) + '">Concept File ' + (i+1) + '</a>';
+			}
+			$('#outputDownload').html(downloadData);
 			message = res.message;
 			$('#outputMessage').html(message + '<br/> loading graph...');
-			var parseFile = "downloads/" + res.conceptFile;
+			var parseFile = res.conceptFile;
 			queryGraph(parseFile);
 		},
 		error : function(error) {

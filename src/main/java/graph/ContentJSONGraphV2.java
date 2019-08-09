@@ -277,12 +277,14 @@ public class ContentJSONGraphV2 extends ContentGraph {
 				title += "<p>ObjectIndex: " + String.join(" | ", concept2ids.get(o.get(nodeNamePos))) + "</p>";
 
 				// get all sentences has this concept
-				for (String connectSentId : concept2Sents.get(o.get(nodeNamePos))) {
-					if (null == sentencesMap.get(connectSentId))
-						continue; // omit null (maybe because filter those sentences)
+				if(concept2Sents != null && concept2Sents.containsKey(o.get(nodeNamePos))) {
+					for (String connectSentId : concept2Sents.get(o.get(nodeNamePos))) {
+						if (null == sentencesMap.get(connectSentId))
+							continue; // omit null (maybe because filter those sentences)
 
-					title += "<p>DislayName: " + sentencesMap.get(connectSentId) + "</p>";
-					title += "<p>LinkID: " + connectSentId + "</p>";
+						title += "<p>DislayName: " + sentencesMap.get(connectSentId) + "</p>";
+						title += "<p>LinkID: " + connectSentId + "</p>";
+					}
 				}
 
 				BiFunction<String, String, String> fListGetDefault = (pos, defVal) -> {

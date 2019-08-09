@@ -61,7 +61,7 @@ public class GraphApi extends HttpServlet {
 		String message = "";
 
 		String appPath = request.getServletContext().getRealPath("/");
-		String uploadFolder = String.format("%s%s", appPath, Constants.UPLOAD_FOLDER);
+		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
 
 		// get from query
 		String fileName = request.getParameter("fileName");
@@ -77,7 +77,7 @@ public class GraphApi extends HttpServlet {
 		}
 
 		// convert to full path
-		String downloadFolder = String.format("%s%s%s", appPath,File.separator, fileName);
+		downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, fileName);
 
 		try {
 

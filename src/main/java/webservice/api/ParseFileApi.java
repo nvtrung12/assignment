@@ -147,8 +147,17 @@ public class ParseFileApi extends HttpServlet {
 
 			// build json data for metadata
 			String metaJson = buildMetaJson(metaData);
-
+			JSONArray jsonArray = new JSONArray();
+			for (int i = 0; i < fileNames.size(); i++) {
+				JSONObject jsonObject = new JSONObject();
+				String conceptsFileName = String.format("%s.xlsx", realFileID + "_" + (i + 1));
+				jsonObject.put("fileName", conceptsFileName);
+				jsonObject.put("fileFolder", realFileID);
+				jsonArray.add(jsonObject);
+			}
+			
 			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("conceptFile", realFileID)
+					.add("fileDownload", jsonArray.toJSONString())
 					.add("message", "output").add("metaJson", metaJson).build().toString();
 
 			response.getWriter().println(jsonReturn);

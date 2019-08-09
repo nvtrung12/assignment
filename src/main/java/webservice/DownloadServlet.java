@@ -23,25 +23,21 @@ public class DownloadServlet extends HttpServlet {
 
 		response.setContentType("text/html");
 		String fileName = request.getParameter("fileName");
-
+		String fileFolder = request.getParameter("fileFolder");
 		String appPath = request.getServletContext().getRealPath("/");
 		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
-		downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, fileName);
-		logger.debug(downloadFolder);
-		for (File file : new File(downloadFolder).listFiles()) {
-			if (file.getName().endsWith(".xlsx") && file.getName().indexOf(fileName) != -1) {
-				PrintWriter out = response.getWriter();
-				response.setContentType("APPLICATION/OCTET-STREAM");
-				response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-				FileInputStream fileInputStream = new FileInputStream(file);
-				int i;
-				while ((i = fileInputStream.read()) != -1) {
-					out.write(i);
-				}
-				fileInputStream.close();
-				out.close();
-			}
+		fileName = String.format("%s%s%s%s%s", downloadFolder, File.separator, fileFolder, File.separator, fileName);
+		File file = new File(fileName);
+		PrintWriter out = response.getWriter();
+		response.setContentType("APPLICATION/OCTET-STREAM");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+		FileInputStream fileInputStream = new FileInputStream(file);
+		int i;
+		while ((i = fileInputStream.read()) != -1) {
+			out.write(i);
 		}
+		fileInputStream.close();
+		out.close();
 
 	}
 }
