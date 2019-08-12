@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +23,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
 
+import com.swabunga.spell.engine.SpellDictionary;
+import com.swabunga.spell.engine.SpellDictionaryHashMap;
+import com.swabunga.spell.event.SpellChecker;
+import com.swabunga.spell.event.StringWordTokenizer;
+
 import edu.stanford.nlp.ling.SentenceUtils;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.trees.Tree;
@@ -36,7 +42,8 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private HttpSession session = null;
 	private Map<String, String> equivalenMap = new HashedMap<>();
-
+	private  URL dictFile = this.getClass().getClassLoader().getResource("/defaults/words_alpha.txt");//("defaults/words_alpha.txt");
+	SpellChecker spellCheck = null;
 	public ParserV5NoSpark() {
 
 	}
@@ -54,6 +61,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 		this.loadStopWord(stopwordFile); // load list of Stopword
 		this.loadPhrase(phraseFile);
 		this.session = session;
+		
 	}
 
 	/**
@@ -172,12 +180,13 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 				sentenceCount += sentenceNumber;
 			}
 		}
-
+		
 		System.out.println("Done get pages, spark begin");
 
 		// use to load number of sentence processed
 		final AtomicInteger loader = new AtomicInteger();
 		if (null != this.session)
+			if(lstSentence != null)
 			this.session.setAttribute("totalSentence", lstSentence.size());
 
 		// run parallel, this will be longest process, so track by progress
@@ -316,14 +325,53 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 		// ----- save concepts to file -----
 		List<Object[]> lstConcept = new LinkedList<>();
 		lstConcept.add(Constants.CONCEPT_HEADER);
-
+		
+		System.out.println("create dictionary");
+		File dict = new File(dictFile.toURI());
+		if(!dict.exists())
+		{
+			System.out.println("dont have dict");
+		}
+		else {
+			SpellDictionary dictionary = new SpellDictionaryHashMap(dict);
+			spellCheck = new SpellChecker(dictionary);
+		}
 		// for (ExtendIndexedWord o : concepts) {
 		for (String ph : mmap_concepts.keySet()) {
 			ExtendIndexedWord o = mmap_concepts.get(ph);
 			String a = sentenceMap.get(o.docID());
-
+			
+			String str= o.getPhrase();	
+			
+			if(str.equals("NULL")) continue;
+			for(int i =0; i< str.length(); i++)
+			{
+				if(!Character.isLetter(str.charAt(i)))
+					{
+						str= "";	
+						break;
+					}
+			}
+			if(str.equals("")) continue;
+			//uppercase string to compare with dictionary wordalpha
+			//TODO
+			if("Lovese".equals(str)) {
+				System.out.println("dddd");
+			}
+			str = str.substring(0, 1).toUpperCase() + str.substring(1);
+			
+				// checkspelling = 1 <-->invalid word
+			StringWordTokenizer x = new StringWordTokenizer(str);
+				if (spellCheck.checkSpelling(x) == 1)
+					{
+						str="";
+						continue;
+					}
+			//lowercase string	
+				str = str.substring(0, 1).toLowerCase() + str.substring(1);
+			
 			String nodeType = o.getPhrase() == "NULL" ? "Collection" : "Concept";
-			Object[] row_data = { o.getPhraseIndex(), o.getPhraseIndex(), o.getPhrase(), "", "", nodeType, o.getSrole(),
+			Object[] row_data = { o.getPhraseIndex(), o.getPhraseIndex(), str, "", "", nodeType, o.getSrole(),
 					String.join(" ", a), "", mCountConceptInt.get(ph), "box", "blue", "green" };
 
 			lstConcept.add(row_data);

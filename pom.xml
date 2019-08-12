@@ -118,6 +118,13 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.jazzy</groupId>
+		    <artifactId>jazzy</artifactId>
+		    <version>0.5.2-rtext-1.4.1</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
