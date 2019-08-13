@@ -21,6 +21,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import webservice.Constants;
+
 /**
  * 
  * @author thanhhungqb
@@ -46,6 +48,19 @@ public class XlsxUtil {
 		String conceptsFileName = String.format("%s.xlsx", fileNameBase + "_" + (fileNames.size() + 1));
 		String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
 		return conceptSfilePath;
+	}
+
+	public static void writeDefaultFile(String fileName)
+			throws EncryptedDocumentException, InvalidFormatException, IOException {
+		if (!new File(fileName).exists()) {
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			workbook.createSheet(Constants.ConceptSheetName);
+			workbook.createSheet(Constants.ConnectionSheetName);
+			workbook.createSheet(Constants.META_SHEET_NAME);
+			FileOutputStream outputStream = new FileOutputStream(fileName);
+			workbook.write(outputStream);
+			workbook.close();
+		}
 	}
 	
 	public static String getLastFile(List<String> fileNames) {
@@ -106,40 +121,6 @@ public class XlsxUtil {
 		return true;
 	}
 	
-	public static boolean writeXlsxMutil(List<String> fileNames, String downloadFolder, String fileNameBase, String sheetName, List<List<Object>> row_datas) throws IOException {
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet(sheetName);
-		int rowNum = 0;
-		
-		for (List<Object> row_data : row_datas) {
-			Row row = sheet.createRow(rowNum++);
-			int colNum = 0;
-			for (Object field : row_data) {
-				Cell cell = row.createCell(colNum++);
-				if (field instanceof String) {
-					cell.setCellValue((String) field);
-				} else if (field instanceof Integer) {
-					cell.setCellValue((Integer) field);
-				} else if (field instanceof Float || field instanceof Double) {
-					cell.setCellValue((double) field);
-				}
-			}
-			if (rowNum >= MAX_ROW_SHEET) {
-				FileOutputStream outputStream = new FileOutputStream(getLastFile(fileNames));
-				workbook.write(outputStream);
-				workbook.close();
-				fileNames.add(nextFile(fileNames, downloadFolder, fileNameBase));
-				workbook = new XSSFWorkbook();
-				sheet = workbook.createSheet(sheetName);
-				rowNum = 0;
-			}
-		}
-		FileOutputStream outputStream = new FileOutputStream(getLastFile(fileNames));
-		workbook.write(outputStream);
-		workbook.close();
-		return true;
-	}
-
 	/**
 	 * 
 	 * @param filePath
@@ -197,7 +178,7 @@ public class XlsxUtil {
 	
 	public static boolean writeRowsXlsxAppendMuti(List<String> fileNames, String downloadFolder, String fileNameBase, String sheetName, List<List<Object>> row_datas)
 			throws EncryptedDocumentException, InvalidFormatException, IOException {
-
+		writeDefaultFile(getLastFile(fileNames));
 		InputStream inp = new FileInputStream(getLastFile(fileNames));
 		Workbook workbook = WorkbookFactory.create(inp);
 		Sheet sheet = workbook.getSheet(sheetName);
@@ -235,9 +216,21 @@ public class XlsxUtil {
 				workbook.write(outputStream);
 				workbook.close();
 				fileNames.add(nextFile(fileNames, downloadFolder, fileNameBase));
-				workbook = new XSSFWorkbook();
-				sheet = workbook.createSheet(sheetName);
-				rowNum = 0;
+				writeDefaultFile(getLastFile(fileNames));
+				inp = new FileInputStream(getLastFile(fileNames));
+				workbook = WorkbookFactory.create(inp);
+				sheet = workbook.getSheet(sheetName);
+				if (null == sheet) {
+					sheet = workbook.createSheet(sheetName);
+				}
+
+				rows = sheet.getLastRowNum();
+				System.out.println(rows);
+
+				if (rows <= 1)
+					rowNum = rows;
+				else
+					rowNum = rows + 1;
 			}
 		}
 		inp.close();

@@ -124,6 +124,7 @@ public class ParseFileApi extends HttpServlet {
 			if(!new File(downloadFolder).exists()) {
 				new File(downloadFolder).mkdir();
 			}
+			int maxFileNames = 0;
 			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
 			//String conceptsFileName = String.format("%s.xlsx", realFileID);
 			//String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
@@ -131,24 +132,37 @@ public class ParseFileApi extends HttpServlet {
 			// get list of concepts
 			List<List<Object>> conceptToWrite = XlsxUtil
 					.convertRowType(((List<Object[]>) ret.get(Constants.ConceptSheetName)));
-			XlsxUtil.writeXlsxMutil(fileNames, downloadFolder , realFileID, Constants.ConceptSheetName, conceptToWrite);
-
-			
+			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder , realFileID, Constants.ConceptSheetName, conceptToWrite);
+			if(maxFileNames < fileNames.size()) {
+				maxFileNames = fileNames.size();
+			}
+			fileNames = new ArrayList<String>();
+			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
 			List<List<Object>> connectionToWrite = XlsxUtil
 					.convertRowType(((List<Object[]>) ret.get(Constants.ConnectionSheetName)));
 			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder, realFileID, Constants.ConnectionSheetName, connectionToWrite);
-
+			
+			if(maxFileNames < fileNames.size()) {
+				maxFileNames = fileNames.size();
+			}
+			
 			// prepaid to add to list
 			Map<String, Object> metaData = (Map<String, Object>) ret.get(Constants.META_SHEET_NAME);
 			List<List<Object>> metaInfo = this.buildMetaInfo(request, response, metaData);
 
 			// write to file
+			fileNames = new ArrayList<String>();
+			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
 			XlsxUtil.writeRowsXlsxAppendMuti(fileNames, downloadFolder, realFileID, Constants.META_SHEET_NAME, metaInfo);
+			
+			if(maxFileNames < fileNames.size()) {
+				maxFileNames = fileNames.size();
+			}
 
 			// build json data for metadata
 			String metaJson = buildMetaJson(metaData);
 			JSONArray jsonArray = new JSONArray();
-			for (int i = 0; i < fileNames.size(); i++) {
+			for (int i = 0; i < maxFileNames; i++) {
 				JSONObject jsonObject = new JSONObject();
 				String conceptsFileName = String.format("%s.xlsx", realFileID + "_" + (i + 1));
 				jsonObject.put("fileName", conceptsFileName);
