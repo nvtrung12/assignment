@@ -37,7 +37,7 @@ public class XlsxUtil {
 	 * @param row_data
 	 * @return
 	 */
-	public static final int MAX_ROW_SHEET = 100;
+	public static final int MAX_ROW_SHEET = 65000;
 	
 	public static String nextFile(List<String> fileNames, String downloadFolder, String fileNameBase) {
 		if (fileNames == null || fileNames.size() == 0) {

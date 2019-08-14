@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 
 import com.swabunga.spell.engine.SpellDictionary;
 import com.swabunga.spell.engine.SpellDictionaryHashMap;
@@ -342,8 +343,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 			String a = sentenceMap.get(o.docID());
 			
 			String str= o.getPhrase();	
-			
-			if(str.equals("NULL")) continue;
+
 			for(int i =0; i< str.length(); i++)
 			{
 				if(!Character.isLetter(str.charAt(i)))
@@ -352,17 +352,24 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 						break;
 					}
 			}
-			if(str.equals("")) continue;
-			//uppercase string to compare with dictionary wordalpha
-			//TODO
-			if("Lovese".equals(str)) {
-				System.out.println("dddd");
+			
+			if (StringUtils.isEmpty(str) || str.equals("NULL") || StringUtils.isNumeric(str))
+				continue;
+			
+			//check exist in pharse list
+			boolean isPharse = false;
+			for (String word : phraseWords) {
+				if(word.equals(str)) {
+					isPharse = true;
+					break;
+				}
 			}
+			//uppercase string to compare with dictionary wordalpha
 			str = str.substring(0, 1).toUpperCase() + str.substring(1);
 			
-				// checkspelling = 1 <-->invalid word
+			// checkspelling = 1 <-->invalid word
 			StringWordTokenizer x = new StringWordTokenizer(str);
-				if (spellCheck.checkSpelling(x) == 1)
+				if (spellCheck.checkSpelling(x) == 1 && isPharse == false)
 					{
 						str="";
 						continue;
