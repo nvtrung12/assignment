@@ -405,10 +405,17 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 
 		Map<String, Integer> degreeOfSentenceNodes = new HashMap<>();
 		Map<String, Integer> degreeOfConceptNodes = new HashMap<>();
+		Map<String, String> mapPhraseIndex = new HashedMap<>();
 
 		for (ExtendIndexedWord enoun1 : concepts) {
-
-			Object[] row_data = { enoun1.docID(), enoun1.getPhraseIndex(), enoun1.getPhrase(), "", enoun1.docID(),
+			String key = enoun1.getPhrase();
+			String value = enoun1.getPhraseIndex();
+			if(!mapPhraseIndex.containsKey(key)) {
+				mapPhraseIndex.put(key, value);
+			}else {
+				value = mapPhraseIndex.get(key);
+			}
+			Object[] row_data = { enoun1.docID(), value, key, "", enoun1.docID(),
 					"NULL", "", "NULL" };
 
 			Integer old1 = degreeOfSentenceNodes.get(enoun1.docID());
