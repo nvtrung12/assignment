@@ -74,8 +74,8 @@ public class GraphQuestionApi extends HttpServlet {
 
 		try {
 
-			List<List<String>> connections = XlsxUtil.readXlsx(fileName, Constants.ConnectionSheetName);
-			List<List<String>> concepts = XlsxUtil.readXlsx(fileName, Constants.ConceptSheetName);
+			List<List<String>> connections = XlsxUtil.readFolderXlsx(fileName, Constants.ConnectionSheetName);
+			List<List<String>> concepts = XlsxUtil.readFolderXlsx(fileName, Constants.ConceptSheetName);
 
 			// remove header
 			connections.remove(0);

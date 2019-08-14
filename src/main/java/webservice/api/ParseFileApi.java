@@ -121,8 +121,10 @@ public class ParseFileApi extends HttpServlet {
 			String realFileID = tmp2[tmp2.length - 1];
 			List<String> fileNames = new ArrayList<String>();
 			downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, realFileID);
-			if(!new File(downloadFolder).exists()) {
+			if (!new File(downloadFolder).exists()) {
 				new File(downloadFolder).mkdir();
+			} else {
+				new File(downloadFolder).delete();
 			}
 			int maxFileNames = 0;
 			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
