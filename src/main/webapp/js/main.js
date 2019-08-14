@@ -28,8 +28,10 @@ function myDoPost() {
 			$('#outputDownload').html(downloadData);
 			message = res.message;
 			$('#outputMessage').html(message + '<br/> loading graph...');
-			var parseFile = res.conceptFile;
-			queryGraph(parseFile);
+			if($("#export_graph:checked").val()){
+				var parseFile = res.conceptFile;
+				queryGraph(parseFile);
+			}
 		},
 		error : function(error) {
 			console.log(error);

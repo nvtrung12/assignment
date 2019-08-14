@@ -18,6 +18,7 @@ function queryGraph(dataFile) {
 			if (res.message) {
 				$('#outputMessage').html(res.message);
 			}
+			
 		},
 		error : function(error) {
 			console.log(error);
