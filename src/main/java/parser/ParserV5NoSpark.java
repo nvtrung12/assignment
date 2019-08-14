@@ -343,10 +343,10 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 			String a = sentenceMap.get(o.docID());
 			
 			String str= o.getPhrase();	
-
 			for(int i =0; i< str.length(); i++)
 			{
-				if(!Character.isLetter(str.charAt(i)))
+				Character w = str.charAt(i);
+				if(!Character.isLetter(w) && w != ' ')
 					{
 						str= "";	
 						break;
