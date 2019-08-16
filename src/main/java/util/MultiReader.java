@@ -34,7 +34,7 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 public class MultiReader {
 
 	public static String newParagraph = "\n\n";
-	public static String newPage = "\n\n\n";
+	public static String newPage = "<pg>";
 
 	public static String parseMulti(String fileName) throws IOException, InvalidFormatException {
 		File file = new File(fileName);
@@ -263,9 +263,21 @@ public class MultiReader {
 	 */
 	public static String parseDocx(String docxFileName) throws InvalidFormatException, IOException {
 		FileInputStream fis = new FileInputStream(docxFileName);
-		XWPFDocument xdoc = new XWPFDocument(OPCPackage.open(fis));
-		XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
-		return extractor.getText();
+		XWPFDocument document = new XWPFDocument(fis);
+		List<XWPFParagraph> paragraphs = document.getParagraphs();
+
+		StringBuffer buff = new StringBuffer();
+		// System.out.println("Total no of paragraph " + paragraphs.size());
+		for (XWPFParagraph para : paragraphs) {
+			buff.append(para.getText());
+			if(para.isPageBreak()) {
+				buff.append(MultiReader.newPage);
+			}else {
+				buff.append(MultiReader.newParagraph);
+			}
+		}
+		fis.close();
+		return buff.toString();
 	}
 
 	/**
@@ -276,9 +288,18 @@ public class MultiReader {
 	 * @throws IOException
 	 */
 	public static String parseDocx(InputStream inputStream) throws InvalidFormatException, IOException {
-		XWPFDocument xdoc = new XWPFDocument(OPCPackage.open(inputStream));
-		XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
-		return extractor.getText();
+		XWPFDocument document = new XWPFDocument(inputStream);
+
+		List<XWPFParagraph> paragraphs = document.getParagraphs();
+
+		StringBuffer buff = new StringBuffer();
+		// System.out.println("Total no of paragraph " + paragraphs.size());
+		for (XWPFParagraph para : paragraphs) {
+			buff.append(para.getText());
+			buff.append(MultiReader.newParagraph);
+		}
+		inputStream.close();
+		return buff.toString();
 	}
 
 	// not use functions
