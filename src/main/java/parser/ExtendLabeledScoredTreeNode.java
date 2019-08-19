@@ -23,7 +23,7 @@ public class ExtendLabeledScoredTreeNode extends LabeledScoredTreeNode {
 
 	/**
 	 * Constructor from parent tree
-	 * 
+	 *  
 	 * @param tree
 	 */
 	public ExtendLabeledScoredTreeNode(LabeledScoredTreeNode tree) {

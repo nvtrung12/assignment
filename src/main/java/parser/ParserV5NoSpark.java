@@ -337,7 +337,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 			SpellDictionary dictionary = new SpellDictionaryHashMap(dict);
 			spellCheck = new SpellChecker(dictionary);
 		}
-		// for (ExtendIndexedWord o : concepts) {
+		// for (ExtendIndexedWord o : concepts) { TODO
 		for (String ph : mmap_concepts.keySet()) {
 			ExtendIndexedWord o = mmap_concepts.get(ph);
 			String a = sentenceMap.get(o.docID());
@@ -357,13 +357,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 				continue;
 			
 			//check exist in pharse list
-			boolean isPharse = false;
-			for (String word : phraseWords) {
-				if(word.equals(str)) {
-					isPharse = true;
-					break;
-				}
-			}
+			boolean isPharse = isPhraseWords(phraseWords, str);
 			//uppercase string to compare with dictionary wordalpha
 			str = str.substring(0, 1).toUpperCase() + str.substring(1);
 			
@@ -393,7 +387,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 		}
 
 		lstConcept.addAll(lstSentenceNode);
-
+		//TODO
 		fret.put(Constants.ConceptSheetName, lstConcept);
 		// ----- end of write concept file ----
 
@@ -409,6 +403,26 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 
 		for (ExtendIndexedWord enoun1 : concepts) {
 			String key = enoun1.getPhrase();
+			//FIXME
+			for(int i =0; i< key.length(); i++)
+			{
+				Character w = key.charAt(i);
+				if(!Character.isLetter(w) && w != ' ')
+					{
+						key= "";	
+						break;
+					}
+			}
+			boolean isPharse = isPhraseWords(phraseWords, key);
+			// checkspelling = 1 <-->invalid word
+			StringWordTokenizer x = new StringWordTokenizer(key);
+			if (spellCheck.checkSpelling(x) == 1 && isPharse == false) {
+				key = "";
+				continue;
+			}
+			if (StringUtils.isEmpty(key) || key.equals("NULL") || StringUtils.isNumeric(key))
+				continue;
+			
 			String value = enoun1.getPhraseIndex();
 			if(!mapPhraseIndex.containsKey(key)) {
 				mapPhraseIndex.put(key, value);
@@ -448,6 +462,16 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 		fret.put("sentencesMap", sentenceMap);
 		fret.put(Constants.META_SHEET_NAME, metaInfo);
 		return fret;
+	}
+	
+	private boolean isPhraseWords(Set<String> phraseWords, String str) {
+		// check exist in pharse list
+		for (String word : phraseWords) {
+			if (word.equals(str)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected final String STR_WORD_COUNT = "wordCount";

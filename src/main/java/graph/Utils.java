@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 
 import util.StringUtils;
 
+@SuppressWarnings("unchecked")
 public class Utils {
 	public static JSONObject create_Node(int id, String label, String group, String title) {
 		JSONObject obj = new JSONObject();
