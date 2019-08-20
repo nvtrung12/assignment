@@ -33,6 +33,7 @@ import org.json.simple.JSONObject;
 
 import parser.IParser;
 import parser.ParserV5NoSpark;
+import util.FileUtils;
 import util.XlsxUtil;
 import webservice.Constants;
 import webservice.StatisticalUtils;
@@ -124,7 +125,7 @@ public class ParseFileApi extends HttpServlet {
 			if (!new File(downloadFolder).exists()) {
 				new File(downloadFolder).mkdir();
 			} else {
-				new File(downloadFolder).delete();
+				FileUtils.deleteFolder(new File(downloadFolder));
 			}
 			int maxFileNames = 0;
 			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));

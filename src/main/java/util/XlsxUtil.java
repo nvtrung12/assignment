@@ -41,11 +41,11 @@ public class XlsxUtil {
 	
 	public static String nextFile(List<String> fileNames, String downloadFolder, String fileNameBase) {
 		if (fileNames == null || fileNames.size() == 0) {
-			String conceptsFileName = String.format("%s.xlsx", fileNameBase + "_1");
+			String conceptsFileName = String.format("%s.xlsx", fileNameBase + "1");
 			String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
 			return conceptSfilePath;
 		}
-		String conceptsFileName = String.format("%s.xlsx", fileNameBase + "_" + (fileNames.size() + 1));
+		String conceptsFileName = String.format("%s.xlsx", fileNameBase + (fileNames.size() + 1));
 		String conceptSfilePath = String.format("%s%s%s", downloadFolder, File.separator, conceptsFileName);
 		return conceptSfilePath;
 	}
