@@ -413,6 +413,8 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 						break;
 					}
 			}
+			if (StringUtils.isEmpty(key) || key.equals("NULL") || StringUtils.isNumeric(key))
+				continue;
 			boolean isPharse = isPhraseWords(phraseWords, key);
 			// checkspelling = 1 <-->invalid word
 			key = key.substring(0, 1).toUpperCase() + key.substring(1);
@@ -421,8 +423,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 				key = "";
 				continue;
 			}
-			if (StringUtils.isEmpty(key) || key.equals("NULL") || StringUtils.isNumeric(key))
-				continue;
+			
 			key = key.substring(0, 1).toLowerCase() + key.substring(1);
 			String value = enoun1.getPhraseIndex();
 			if(!mapPhraseIndex.containsKey(key)) {
