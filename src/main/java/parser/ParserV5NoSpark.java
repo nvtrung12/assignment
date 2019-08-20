@@ -360,7 +360,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 			boolean isPharse = isPhraseWords(phraseWords, str);
 			//uppercase string to compare with dictionary wordalpha
 			str = str.substring(0, 1).toUpperCase() + str.substring(1);
-			
+			//data ->Data
 			// checkspelling = 1 <-->invalid word
 			StringWordTokenizer x = new StringWordTokenizer(str);
 				if (spellCheck.checkSpelling(x) == 1 && isPharse == false)
@@ -415,6 +415,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 			}
 			boolean isPharse = isPhraseWords(phraseWords, key);
 			// checkspelling = 1 <-->invalid word
+			key = key.substring(0, 1).toUpperCase() + key.substring(1);
 			StringWordTokenizer x = new StringWordTokenizer(key);
 			if (spellCheck.checkSpelling(x) == 1 && isPharse == false) {
 				key = "";
@@ -422,7 +423,7 @@ public class ParserV5NoSpark extends ParserV4 implements Serializable {
 			}
 			if (StringUtils.isEmpty(key) || key.equals("NULL") || StringUtils.isNumeric(key))
 				continue;
-			
+			key = key.substring(0, 1).toLowerCase() + key.substring(1);
 			String value = enoun1.getPhraseIndex();
 			if(!mapPhraseIndex.containsKey(key)) {
 				mapPhraseIndex.put(key, value);
