@@ -126,6 +126,7 @@ public class ParseFileApi extends HttpServlet {
 				new File(downloadFolder).mkdir();
 			} else {
 				FileUtils.deleteFolder(new File(downloadFolder));
+				new File(downloadFolder).mkdir();
 			}
 			int maxFileNames = 0;
 			fileNames.add(XlsxUtil.nextFile(fileNames, downloadFolder, realFileID));
@@ -167,7 +168,7 @@ public class ParseFileApi extends HttpServlet {
 			JSONArray jsonArray = new JSONArray();
 			for (int i = 0; i < maxFileNames; i++) {
 				JSONObject jsonObject = new JSONObject();
-				String conceptsFileName = String.format("%s.xlsx", realFileID + "_" + (i + 1));
+				String conceptsFileName = String.format("%s.xlsx", realFileID + XlsxUtil.PATH_SPECIFIED + (i + 1));
 				jsonObject.put("fileName", conceptsFileName);
 				jsonObject.put("fileFolder", realFileID);
 				jsonArray.add(jsonObject);
