@@ -20,33 +20,20 @@ public class TestBayesianNetwork1 {
 	public static void main(String[] args) throws Exception {
 
 		final String fileName = "tmp/inputtest1.xlsx";
-		final String sheetName = "sheet1";
-
+		//final String sheetName = "sheet1";
+		final String sheetName = "CALLink";
+		final String sheetParam = "Para";
 		InputStream is = new FileInputStream(fileName);
-		Map<String, Object> out = BayesianUtils.loadSimpleNetworkFormat(is, sheetName);
+		Map<String, Object> out = BayesianUtils.loadSimpleNetworkFormat(is, sheetName ,sheetParam);
 
 		Map<String, Set<String>> outNodes = (Map<String, Set<String>>) out.get("graph");
 		Map<String, Set<String>> inNodes = (Map<String, Set<String>>) out.get("graphToMe");
-
+		Map<String, Object> kwargs = (Map<String, Object>) out.get("prob");
 		Set<String> qs = new HashSet<>(Arrays.asList("Q1", "Q2"));
 
 		Set<String> cs = new HashSet<>(Arrays.asList("C1", "C2", "C3", "C4", "C5"));
 
 		// a k m n
-		List params = Arrays.asList("a", "k", "m", "n", 0.716981132, 0.6, 0.22, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.9, 0.01, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.4, 0.22, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.3, 0.22, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.5, 0.4, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.5, 0.22, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.5, 0.1, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.5, 0.22, 0.2);
-		params = Arrays.asList("a", "k", "m", "n", 0.6, 0.5, 0.7, 0.2);
-
-		Map<String, Object> kwargs = new HashMap<>();
-		int x2 = params.size() / 2;
-		for (int i = 0; i < params.size() / 2; ++i)
-			kwargs.put((String) params.get(i), params.get(x2 + i));
 
 		QCBayesianNetwork qcbn = new QCBayesianNetwork(outNodes, inNodes, qs, cs, kwargs);
 		qcbn.logger.setLevel(Level.OFF);

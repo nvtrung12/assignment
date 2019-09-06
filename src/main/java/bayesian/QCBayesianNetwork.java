@@ -25,7 +25,17 @@ public class QCBayesianNetwork {
 	public QCBayesianNetwork() {
 		// do nothing
 	}
+	protected final static char NOT_SIGN = '-';
 
+	protected Map<ImmutablePair<Set<String>, Set<String>>, Double> pp;
+
+	protected Map<String, Set<String>> outNodes;
+	protected Map<String, Set<String>> inNodes;
+	protected Set<String> questionNodes;
+	protected Set<String> conceptNodes;
+
+	// logger
+	public final Logger logger = Logger.getLogger(this.getClass());
 	public QCBayesianNetwork(Map<String, Set<String>> outNodes, Map<String, Set<String>> inNodes,
 			Set<String> questionNodes, Set<String> conceptNodes) throws Exception {
 		this.classInit(outNodes, inNodes, questionNodes, conceptNodes, new HashMap<>());
@@ -155,7 +165,10 @@ public class QCBayesianNetwork {
 		this.inNodes = inNodes;
 		this.questionNodes = questionNodes;
 		this.conceptNodes = conceptNodes;
-
+		
+		this.inNodes =new HashMap<>();
+		this.outNodes =new HashMap<>();
+		
 		Set<String> nodes = new HashSet<>(questionNodes);
 		nodes.addAll(conceptNodes);
 		for (String node : nodes)
@@ -165,12 +178,12 @@ public class QCBayesianNetwork {
 			if (this.outNodes.get(node) == null)
 				this.outNodes.put(node, new HashSet<>());
 
-		double a = (double) kwargs.get("a");
+		double l = (double) kwargs.get("l");
 		double k = (double) kwargs.get("k");
 		double m = (double) kwargs.get("m");
 		double n = (double) kwargs.get("n");
 
-		double pQ = a;
+		double pQ = l;
 		this.pp = new HashMap<>();
 
 		// P(Qi) = a
@@ -743,15 +756,5 @@ public class QCBayesianNetwork {
 			System.out.println(String.format("%s: %s", key, this.pp.get(key)));
 	}
 
-	protected final static char NOT_SIGN = '-';
-
-	protected Map<ImmutablePair<Set<String>, Set<String>>, Double> pp;
-
-	protected Map<String, Set<String>> outNodes;
-	protected Map<String, Set<String>> inNodes;
-	protected Set<String> questionNodes;
-	protected Set<String> conceptNodes;
-
-	// logger
-	public final Logger logger = Logger.getLogger(this.getClass());
+	
 }
