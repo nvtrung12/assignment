@@ -25,6 +25,9 @@ public class QCBayesianNetwork {
 	public QCBayesianNetwork() {
 		// do nothing
 	}
+	private String oneWord(String input) {
+		return String.format("s%s", "-", input);
+	}
 	protected final static char NOT_SIGN = '-';
 
 	protected Map<ImmutablePair<Set<String>, Set<String>>, Double> pp;
@@ -275,7 +278,7 @@ public class QCBayesianNetwork {
 			return get(A);
 		} else {
 			// if neg
-			if ((a instanceof String)) {
+			if (a instanceof String) {
 				Set<String> negA = toSet(getNeg((String) a));
 				if (containsKey(negA)) {
 					put(A, 1 - get(negA));

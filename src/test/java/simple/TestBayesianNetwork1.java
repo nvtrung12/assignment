@@ -60,20 +60,20 @@ public class TestBayesianNetwork1 {
 		QCBayesianNetwork qcbn = new QCBayesianNetwork(outNodes, inNodes, qs, cs, kwargs);
 		qcbn.logger.setLevel(Level.OFF);
 
-		//List<Set<String>> rs = Arrays.asList(toSet("Q1", "Q2"), toSet("-Q1", "Q2"), toSet("Q1", "-Q2"),
-//				toSet("-Q1", "-Q2"));
-		List<Set<String>> rs = new ArrayList<>();
+		List<Set<String>> rs = Arrays.asList(toSet("Q1", "Q2"), toSet("-Q1", "Q2"), toSet("Q1", "-Q2"),
+				toSet("-Q1", "-Q2"));
+		//List<Set<String>> rs = new ArrayList<>();
 		String character ="-";
 		int n = gt(qs.size());
 		
-		for (String q1 : qs) {
-			Set<String> s =new HashSet<>();
-			for (String q2 : qs) {
-				if(!q1.equals(q2)) {
-					//toSet(q1,q2
-				}
-			}
-		}
+//		for (String q1 : qs) {
+//			Set<String> s =new HashSet<>();
+//			for (String q2 : qs) {
+//				if(!q1.equals(q2)) {
+//					//toSet(q1,q2
+//				}
+//			}
+//		}
 //		rs = Arrays.asList(toSet("Q1", "Q2"));
 		// r1 = Arrays.asList(toSet("C2"));
 
