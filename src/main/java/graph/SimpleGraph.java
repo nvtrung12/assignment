@@ -26,7 +26,6 @@ public class SimpleGraph implements IGraph {
 	private List<Edge> edges = new LinkedList<>();
 
 	public SimpleGraph() {
-
 	}
 
 	public SimpleGraph(List<Object[]> lobj) {
@@ -99,4 +98,3 @@ public class SimpleGraph implements IGraph {
 		return null;
 	}
 }
-

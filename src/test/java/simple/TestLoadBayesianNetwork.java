@@ -16,11 +16,11 @@ public class TestLoadBayesianNetwork {
 		final String sheetName = "sheet1";
 		final String sheetParam = "Para";
 		InputStream is = new FileInputStream(fileName);
-		Map<String, Object> out = BayesianUtils.loadSimpleNetworkFormat(is, sheetName ,sheetParam);
-
-		for (String key : out.keySet()) {
-			System.out.println("key: " + key);
-			System.out.println("values: " + out.get(key));
-		}
+//		Map<String, Object> out = BayesianUtils.loadSimpleNetworkFormat(is, sheetName ,sheetParam);
+//
+//		for (String key : out.keySet()) {
+//			System.out.println("key: " + key);
+//			System.out.println("values: " + out.get(key));
+//		}
 	}
 }

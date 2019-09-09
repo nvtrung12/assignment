@@ -28,7 +28,7 @@ public class ContentGraph implements IGraph {
 	private Set<JSONObject> edges = new HashSet<JSONObject>();
 	private JSONObject metaInfo = new JSONObject();
 
-	public ContentGraph() {
+	public ContentGraph() { 
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class ContentGraph implements IGraph {
 				title = title + ": "
 						+ sentencesMap.get(o).stream().map(o1 -> o1.value()).collect(Collectors.joining(" "));
 
-				this.metaInfo.put(o, title);
+				//this.metaInfo.put(o, title);
 			}
 			nodes.add(Utils.create_Node(o, o, o, null));
 			nodeIdSet.add(title);
@@ -82,7 +82,7 @@ public class ContentGraph implements IGraph {
 					title = title + ": "
 							+ sentencesMap.get(docId).stream().map(o1 -> o1.value()).collect(Collectors.joining(" "));
 
-					this.metaInfo.put(key, title);
+					//this.metaInfo.put(key, title);
 				}
 
 				// create new node if not found

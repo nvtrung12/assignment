@@ -160,20 +160,22 @@ public class QCBayesianNetwork {
 	public void classInit(Map<String, Set<String>> outNodes, Map<String, Set<String>> inNodes,
 			Set<String> questionNodes, Set<String> conceptNodes, Map<String, Object> kwargs) throws Exception {
 		this.logger.setLevel(Level.OFF);
-
-		this.outNodes = outNodes;
-		this.inNodes = inNodes;
-		this.questionNodes = questionNodes;
-		this.conceptNodes = conceptNodes;
 		
 		this.inNodes =new HashMap<>();
 		this.outNodes =new HashMap<>();
+		
+		this.outNodes = new HashMap<>(outNodes);
+		this.inNodes = new HashMap<>(inNodes);
+		this.questionNodes = questionNodes;
+		this.conceptNodes = conceptNodes;
+		
+		
 		
 		Set<String> nodes = new HashSet<>(questionNodes);
 		nodes.addAll(conceptNodes);
 		for (String node : nodes)
 			if (this.inNodes.get(node) == null)
-				this.inNodes.put(node, new HashSet<>());
+				this.inNodes.put(node, new HashSet<String>());
 		for (String node : nodes)
 			if (this.outNodes.get(node) == null)
 				this.outNodes.put(node, new HashSet<>());
@@ -201,23 +203,45 @@ public class QCBayesianNetwork {
 		// P(C..|-Qj) = m
 		// P(C1C2|-Q1) = m
 		// P(C2|-Q2) = m
-		put("C1", getNeg("Q1"), Math.sqrt(m));
-		put("C2", getNeg("Q1"), Math.sqrt(m));
-
-		put("C2", getNeg("Q2"), m);
-
-		// ?
-		put("C3", getNeg("C1"), sqrt(n));
-		put("C4", getNeg("C1"), sqrt(n));
-
-		put("C4", getNeg("C2"), n);
-
-		put("C5", getNeg("C3"), n);
-		put("C5", getNeg("C4"), n);
+		
+		
+		this.inNodes.forEach((key,value)->{
+			value.forEach(s->{
+				boolean isQuestion =false;
+				for (String qu : questionNodes) {
+					if(s.equals(qu)) {
+						isQuestion =true;
+						break;
+					}
+				}
+				if(isQuestion) {
+					put(key, getNeg(s),Math.sqrt(m));
+				}else {
+					put(key, getNeg(s),Math.sqrt(n));
+				}
+			});
+		});
+		
+//		put("C1", getNeg("Q1"), Math.sqrt(m));
+//		put("C2", getNeg("Q1"), Math.sqrt(m));
+//
+//		put("C2", getNeg("Q2"), m);
+//
+//		// ?
+//		put("C3", getNeg("C1"), sqrt(n));
+//		put("C4", getNeg("C1"), sqrt(n));
+//
+//		put("C4", getNeg("C2"), n);
+//
+//		put("C5", getNeg("C3"), n);
+//		put("C5", getNeg("C4"), n);
 
 		// calculate and cache all adjective node
+		
 		for (String node : nodes) {
-			for (String toNode : this.outNodes.get(node)) {
+			System.out.println(node);
+			Set<String> set = this.outNodes.get(node);
+			for (String toNode : set) {
 				double p = p(node, toSet(toNode));
 				put(node, toNode, p);
 				put(getNeg(node), toNode, 1 - p);

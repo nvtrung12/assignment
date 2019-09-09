@@ -47,7 +47,7 @@ public class QuestionGraph implements IGraph {
 		Set<String> nodeIdSet = new HashSet<>();
 
 		// a empty concept parent, need improve later
-		//ConceptParentCollection x = new ConceptParentCollection();
+		// ConceptParentCollection x = new ConceptParentCollection();
 
 		// omit sentence node
 		List<List<String>> concepts = conceptsP.stream().filter(o -> !("NULL".equals(o.get(nodeNamePos))))

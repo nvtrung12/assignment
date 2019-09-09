@@ -91,7 +91,8 @@ public class Utils {
 		for (List<String> edge : edges) {
 			String u = edge.get(0);
 			String v = edge.get(1);
-			if(!(StringUtils.isNullOrEmpty(u) || StringUtils.isNullOrEmpty(v) || !next_node.containsKey(u) || !next_node.containsKey(v))) {
+			if (!(StringUtils.isNullOrEmpty(u) || StringUtils.isNullOrEmpty(v) || !next_node.containsKey(u)
+					|| !next_node.containsKey(v))) {
 				next_node.get(u).add(v);
 				next_node.get(v).add(u);
 			}
