@@ -61,7 +61,7 @@ public class BayesianUtils {
 		//final Function<Integer, String> fVertex = idx -> dataFormatter.formatCellValue(r3.getCell(idx));
 		MultiValuedMap<String, String> graphAdj = new ArrayListValuedHashMap<>();
 		MultiValuedMap<String, String> graphToMe = new ArrayListValuedHashMap<>();
-		for (int rowNum = 1; rowNum < sheet.getLastRowNum(); ++rowNum) {
+		for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); ++rowNum) {
 			Row row = sheet.getRow(rowNum);
 			String sourceId = dataFormatter.formatCellValue(row.getCell(2));
 			String sourceName = dataFormatter.formatCellValue(row.getCell(3));

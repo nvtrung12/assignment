@@ -132,13 +132,18 @@ public class TestBayesianNetwork1 {
 		
 		// a k m n
 		QCBayesianNetwork qcbn = new QCBayesianNetwork(outNodes, inNodes, qs, cs, kwargs);
+		//{Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], C1=[C3, C4], C2=[C4]}
+		//{C3=[C1], C4=[C1, C2], C5=[C3, C4], C1=[Q1], C2=[Q1, Q2]}
+		//[Q1, Q2]
+		//[C3, C4, C5, C1, C2]
+		//{k=0.5, l=0.6, m=0.7, n=0.2}
 		qcbn.logger.setLevel(Level.OFF);
 		String str="";
 		for (String string : qs) {
 			str = str + string;
 		}
 		List<Set<String>> rs = calculatePermutation(str);
-		
+		//[[-Q1, -Q2], [Q2, -Q1], [Q1, -Q2], [Q1, Q2]]
 		for (String ss : cs) {
 			for (Set<String> g : rs)
 				try {

@@ -206,7 +206,7 @@ public class QCBayesianNetwork {
 		// P(C..|-Qj) = m
 		// P(C1C2|-Q1) = m
 		// P(C2|-Q2) = m
-		
+		//{C3=[C1], Q1=[], C4=[C1, C2], Q2=[], C5=[C3, C4], C1=[Q1], C2=[Q1, Q2]}
 		
 		this.inNodes.forEach((key,value)->{
 			value.forEach(s->{
@@ -218,8 +218,10 @@ public class QCBayesianNetwork {
 					}
 				}
 				if(isQuestion) {
+					System.out.println("question   " +key + "    "+s);
 					put(key, getNeg(s),Math.sqrt(m));
 				}else {
+					System.out.println("Collection  " +key + "    "+s);
 					put(key, getNeg(s),Math.sqrt(n));
 				}
 			});
@@ -242,7 +244,7 @@ public class QCBayesianNetwork {
 		// calculate and cache all adjective node
 		
 		for (String node : nodes) {
-			System.out.println(node);
+			//System.out.println(node);
 			Set<String> set = this.outNodes.get(node);
 			for (String toNode : set) {
 				double p = p(node, toSet(toNode));
