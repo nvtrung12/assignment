@@ -31,7 +31,7 @@ public class BayesianUtils {
 	 * @throws EncryptedDocumentException
 	 */
 	public static Map<String, Object> loadSimpleNetworkFormat(InputStream inputStream, String sheetName,
-			String sheetParam, String sheetCollection)
+			String sheetParam, String sheetAllNodes)
 			throws EncryptedDocumentException, InvalidFormatException, IOException {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		Map<String, String> element = new HashMap<String, String>();
@@ -40,7 +40,7 @@ public class BayesianUtils {
 		Sheet sheet = workbook.getSheet(sheetName);
 		Sheet sheetP = workbook.getSheet(sheetParam);
 		//sheetCollection
-		Sheet sheetC = workbook.getSheet(sheetCollection);
+		Sheet sheetAll = workbook.getSheet(sheetAllNodes);
 		
 		DataFormatter dataFormatter = new DataFormatter();
 
@@ -90,13 +90,15 @@ public class BayesianUtils {
 			Set<String> value = Sets.newHashSet(v);
 			graphToMe2.put(k, value);
 		});
-		//get data from sheetCollection
+		//get data from sheetAllNodes
 		Map<String, String> allNode = new HashMap<>(); 
-		for (int rowNum = 1; rowNum < sheetC.getLastRowNum(); ++rowNum) {
-			Row row = sheet.getRow(rowNum);
+		for (int rowNum = 1; rowNum <= sheetAll.getLastRowNum(); ++rowNum) {
+			Row row = sheetAll.getRow(rowNum);
 			String objectIndex = dataFormatter.formatCellValue(row.getCell(1));
 			String type = dataFormatter.formatCellValue(row.getCell(5));
-			allNode.put(objectIndex, type);
+			if(!objectIndex.equals("") && !type.equals("") && !type.equals("NULL") && !objectIndex.equals("NULL")) {
+				allNode.put(objectIndex, type);
+			}
 		}
 		ret.put("prob", prob);//{k=0.5, l=0.25, m=0.7, n=0.2}
 		ret.put("graph", grapMap);//{Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], C1=[C3, C4], C2=[C4]}

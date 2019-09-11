@@ -24,6 +24,79 @@ public class TestBayesianNetwork1 {
 		return n * gt(n - 1);
 	}
 	
+	private static String upTextSym(char text) {
+		return "-".concat(String.valueOf(text));
+	}
+	
+	private static List<Set<String>> permute(String input) {
+		int n = input.length();
+		int max = 1 << n;
+		input = input.toLowerCase();
+		List<Set<String>> rs =new ArrayList<>();
+		for (int i = 0; i < max; i++) {
+			char combination[] = input.toCharArray();
+			String [] array = new String[n];
+			Set<String> set =new HashSet<>();
+			for (int j = 0; j < n; j++) {
+				if (((i >> j) & 1) == 1)
+					combination[j] = (char) (combination[j] - 32);
+			}
+			for (int m = 0; m < combination.length; m++) {
+				char x = combination[m];
+				if (x == Character.toUpperCase(combination[m])) {
+					array[m] = upTextSym(x);
+					set.add(upTextSym(x));
+				}else {
+					array[m] = String.valueOf(Character.toUpperCase(x));
+					set.add(String.valueOf(Character.toUpperCase(x)));
+				}
+			}
+			rs.add(set);
+			//result.add(combination.toString());
+		}
+		return rs;
+	}
+	
+	
+	public static List<Set<String>> calculatePermutation(String S) {
+		List<String> ans = new ArrayList<>();
+		dfs(S.toCharArray(), 0, ans);
+		//q1q2q3q4
+		List<Set<String>> rs =new ArrayList<Set<String>>();
+		ans.forEach(q->{
+			char [] ch = q.toCharArray();
+			Set<String> set =new HashSet<>();
+			for (int j = 0; j < ch.length; j++) {
+				if (j % 2 != 0) {
+					if (ch[j-1] == Character.toUpperCase(ch[j-1])) {
+						set.add(upTextSym(ch[j-1]) +String.valueOf(ch[j]));
+					}else {
+						set.add(String.valueOf(Character.toUpperCase(ch[j - 1])) + ch[j]);
+					}
+					//set.add(String.valueOf(ch[j-1]+ch[j]));
+				}
+			}
+			rs.add(set);
+		});
+		
+		
+		return rs;
+	}
+
+	private static void dfs(char[] S, int i, List<String> ans) {
+		if (i == S.length) {
+			ans.add(new String(S));
+			return;
+		}
+		dfs(S, i + 1, ans);
+		if (!Character.isLetter(S[i]))
+			return;
+		S[i] ^= 1 << 5;
+		dfs(S, i + 1, ans);
+		S[i] ^= 1 << 5;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 
@@ -46,48 +119,27 @@ public class TestBayesianNetwork1 {
 
 		collections.forEach((k, v) -> {
 			allNodes.forEach((nKey, nValue) -> {
-				if(k.equals(nKey)) {
-					if(nValue.equals(nodeType)) {
-						qs.add(nKey);
-					}else {
-						cs.add(nKey);
+				if (!"NULL".equals(nValue))
+					if (k.equals(nKey)) {
+						if (nValue.equals(nodeType)) {
+							qs.add(v);
+						} else {
+							cs.add(v);
+						}
 					}
-				}
 			});
 		});
 		
 		// a k m n
 		QCBayesianNetwork qcbn = new QCBayesianNetwork(outNodes, inNodes, qs, cs, kwargs);
 		qcbn.logger.setLevel(Level.OFF);
-
-		List<Set<String>> rs = Arrays.asList(toSet("Q1", "Q2"), toSet("-Q1", "Q2"), toSet("Q1", "-Q2"),
-				toSet("-Q1", "-Q2"));
-		//List<Set<String>> rs = new ArrayList<>();
-		String character ="-";
-		int n = gt(qs.size());
+		String str="";
+		for (String string : qs) {
+			str = str + string;
+		}
+		List<Set<String>> rs = calculatePermutation(str);
 		
-//		for (String q1 : qs) {
-//			Set<String> s =new HashSet<>();
-//			for (String q2 : qs) {
-//				if(!q1.equals(q2)) {
-//					//toSet(q1,q2
-//				}
-//			}
-//		}
-//		rs = Arrays.asList(toSet("Q1", "Q2"));
-		// r1 = Arrays.asList(toSet("C2"));
-
-		// put(getNeg("C1"), "Q1", sqrt(l));
-		// put(getNeg("C2"), "Q1", sqrt(l));
-
-		// put(getNeg("C2"), "Q2", l);
-//		rs = Arrays.asList(toSet("Q1"), toSet("Q2"));
-
-		System.out.println(kwargs);
-		System.out.println();
 		for (String ss : cs) {
-//		for (String ss : Arrays.asList("C4", "C5")) {
-//		for (String ss : Arrays.asList("-C1", "-C2")) {
 			for (Set<String> g : rs)
 				try {
 					System.out.println(String.format("P(%s|%s)=%s ", ss, g, qcbn.p(ss, g)));
