@@ -1,17 +1,19 @@
 package webservice.api;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
-
 
 @WebServlet(urlPatterns = { "/api/callLink" })
 public class CallLinkApi extends HttpServlet {
@@ -37,22 +39,22 @@ public class CallLinkApi extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String json = null;
-		try {
-			HttpSession sess = req.getSession();
-			int totalSentence = sess.getAttribute("totalSentence") != null ? (int) sess.getAttribute("totalSentence") : 1;
-			int numProcessed = sess.getAttribute("numProcessed") != null ? (int) sess.getAttribute("numProcessed") : 0;
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// initial session for this user
+		request.getSession();
+		List<Pair<String, String>> out = Utils.storeFiles(request, response);
 
-			// build json to return
-			json = Json.createObjectBuilder().add("percentage", 100 * numProcessed / totalSentence).build().toString();
-		} catch (Exception e) {
-			this.logger.error(e);
-			e.printStackTrace();
-			json = Json.createObjectBuilder().add("percentage", 0).build().toString();
+		JsonArrayBuilder arrJsonBuilder = Json.createArrayBuilder();
+
+		for (Pair<String, String> o : out) {
+			JsonObject js = Json.createObjectBuilder().add("fileName", o.getLeft()).add("storedFileName", o.getRight())
+					.build();
+			arrJsonBuilder.add(js);
 		}
+		String jsonReturn = Json.createObjectBuilder().add("status", 0).add("files", arrJsonBuilder.build()).build()
+				.toString();
 
-		resp.setContentType("application/json");
-		resp.getWriter().println(json);
+		response.setContentType("application/json");
+		response.getWriter().println(jsonReturn);
 	}
 }

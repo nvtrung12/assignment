@@ -2,6 +2,7 @@ package webservice.api;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +49,7 @@ public class Utils {
 		String fileName = null;
 		List<Pair<String, String>> fileNames = new LinkedList<>();
 		// Get all the parts from request and write it to the file on server
+		Collection<Part> p = request.getParts();
 		for (Part part : request.getParts()) {
 			try {
 				fileName = Utils.getFileName(part);
