@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.math3.analysis.function.Pow;
 
 public class test {
 
@@ -47,7 +48,7 @@ public class test {
 	}
 
 	public static void main(String[] args) {
-		permute("ABCD");
+		System.out.println(Math.pow(8, 1D/3));
 	}
 
 }

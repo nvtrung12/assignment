@@ -1,348 +1,119 @@
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-	  <title>Bootstrap Example</title>
-	  <meta charset="utf-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-	  
-	  
-	  <script src="js/semanticGraph.js"></script>
-	<script src="js/util.js"></script>
-	<script src="js/jsupload.js"></script>
-	<script src="js/main.js"></script>
-	<script src="js/header.js"></script>
-	  <script type="text/javascript" src="vis/dist/vis.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Demo text extraction</title>
+
+<script	src="///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="vis/dist/vis.js"></script>
 <script type="text/javascript" src="vis/dist/vis-network.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <link href="vis/dist/vis-network.min.css" rel="stylesheet"
 	type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/style.css">
 
-	  
-	  
-	  
-	  <style>
-	 
-	    /* Remove the navbar's default margin-bottom and rounded borders */ 
-	    .navbar {
-	      margin-bottom: 0;
-	      border-radius: 0;
-	    }
-	    
-	    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-	    .row.content {height: 450px}
-	    
-	    /* Set gray background color and 100% height */
-	    .sidenav {
-	      padding-top: 20px;
-	      background-color: #f1f1f1;
-	      height: 100%;
-	    }
-	    
-	    /* Set black background color, white text and some padding */
-	    footer {
-	      background-color: #555;
-	      color: white;
-	      padding: 15px;
-	    }
-	    
-	    /* On small screens, set height to 'auto' for sidenav and grid */
-	    @media screen and (max-width: 767px) {
-	      .sidenav {
-	        height: auto;
-	        padding: 15px;
-	      }
-	      .row.content {height:auto;} 
-	    }
-	  </style>
-	</head>
-	<body>
-	
-	<nav class="navbar navbar-inverse">
-	  <div class="container-fluid">
-	    <div class="navbar-header">
-	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>                        
-	      </button>
-	      
-	      <a class="navbar-brand" href="#"><img src="https://2.bp.blogspot.com/-IqfPZk6VS-Q/VjRyFA3liAI/AAAAAAAAArk/9mHeB01sWaM/s1600/logo%2Bcopy.png" alt="Phienbanmoi.com - Chia sẻ kiến thức - Download phần mềm"></a>
-	    </div>
-	    <div class="collapse navbar-collapse" id="myNavbar">
-	      <ul class="nav navbar-nav">
-	        <li class="active"><a href="#">Home</a></li>
-	        <li><a href="./index.html">CBook Generation</a></li>
-	        <li><a href="./filter.jsp">Visualization</a></li>
-	      </ul>
-	      <ul class="nav navbar-nav navbar-right">
-	        <!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
-	      </ul>
-	    </div>
-	  </div>
-	</nav>
-	  
-	<div class="container-fluid text-center">    
-	  <div class="row content">
-	    <div class="col-sm-2 sidenav">
-	      <p><a href="#">Link</a></p>
-	      <p><a href="#">Link</a></p>
-	      <p><a href="#">Link</a></p>
-	    </div>
-	<h2 class="title" style="color:red;text-align:center">CBook Generation</h2>
-	<form class="form" id="f1" name="f1" method="post" enctype="multipart/form-data">
-				<div class="col-sm-8 text-left">
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Ebook (pdf/doc/docx)</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="file" id="ebookFile" value="" /> <label
-									id="ebookUploaded"></label>
-							</div>
-						</div>
-					</div>
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Equivalence list</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="equivalencefile" />
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Phrase list</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="phrasefile" id="phraseFile" />
-							<label id="phraseListUploaded"></label> 
-							<a href="download?fileName=defaults/Phrase_default.docx">Phrase_default.docx</a>
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Ignored concepts</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="stopwordfile" id="stopwordfile" />
-								<label id="ignoredConceptsUploaded"></label> 
-							<a href="download?fileName=defaults/Ignored_concept_default.txt">Ignored_concept_default.txt</a>
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Ebook (pdf/doc/docx)</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="file" id="ebookFile" value="" /> <label
-									id="ebookUploaded"></label>
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Book title</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="book_title" id="book_title" value="" />
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Author</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="author" id="author" value="" />
-							</div>
-						</div>
-	
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Publisher</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="publisher" id="publisher" value="" />
-							</div>
-						</div>
-	
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>ISBN</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="isbn" id="isbn" value="" />
-							</div>
-						</div>
-	
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Date of publication</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="date_of_publication" value="" />
-							</div>
-						</div>
-					</div>
-					----------
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Collection area</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text"
-								name="colection_area" id="colection_area"
-								value="" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Collection subarea</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="colection_subarea" id="colection_subarea" value="" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Date of creation</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text"
-								name="date_of_creation" id="date_of_creation"
-								value="" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Export graph</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="checkbox" name="export_graph" id="export_graph" value="1"/>
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<input type="submit"  />
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-						
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Output: </label> <span id="outputMessage"></span>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-						<div id="outputDownload"></div>
-						</div>
-					</div>
-	
-	
-	
-	
-				</div>
-	
-	
-	</form>
-	
-	
-	
-	
-				<div class="col-sm-2 sidenav">
-	      <div class="well">
-	        <p>TEXT1</p>
-	      </div>
-	      <div class="well">
-	        <p>TEXT2</p>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	<br />
-	<br />
-	<br />
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12 col-lg-12">
-				<div class="ConceptVisualization">
-					<div id="mynetwork"></div>
-					<div id="infoDiv" class="graphInfo"></div>
-				</div>
+</head>
+
+<body>
+	<div class="metaData topcorner" id="metaData"></div>
+	<div class="mainpart">
+		<div class="center">
+			<div id="header">
+				<a href="./index.html">CBook Generation</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <a href="./merge">Extraction
+					Combination</a> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <a href="./filter.jsp">Visualization</a>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 			</div>
 
+			<div class="border">
+				<h2 class="textcenter">CBook Generation</h2>
+			</div>
+			<br /> <br />
+			<div class="alignleft">
+				<form class="form" id="f1" name="f1" method="post" enctype="multipart/form-data">
+					<div>
+						<label>Ebook (pdf/doc/docx)</label>
+						<input type="file" name="file" id="ebookFile" value="" /> 
+						<label id="ebookUploaded"></label>
+					</div>
+					<div>
+						<label>Equivalence list</label> <input type="file" name="equivalencefile" />
+					</div>
+					<div>
+						<label>Phrase list</label> <input type="file" name="phrasefile" id="phraseFile" />
+						<label id="phraseListUploaded"></label> 
+						<a href="download?fileName=defaults/Phrase_default.docx">Phrase_default.docx</a>
+					</div>
+					<div>
+						<label>Ignored concepts</label><input type="file" name="stopwordfile" id="stopwordfile" />
+						<label id="ignoredConceptsUploaded"></label> 
+						<a href="download?fileName=defaults/Ignored_concept_default.txt">Ignored_concept_default.txt</a>
+					</div>
+					<div>
+						<label>Book title</label><input type="text" name="book_title" id="book_title" value="" />
+					</div>
+					<div>
+						<label>Author</label><input type="text" name="author" id="author" value="" />
+					</div>
+					<div>
+						<label>Publisher</label><input type="text" name="publisher" id="publisher" value="" />
+					</div>
+					<div>
+						<label>ISBN</label><input type="text" name="isbn" id="isbn" value="" />
+					</div>
+					<div>
+						<label>Date of publication</label><input type="text" name="date_of_publication" value="" />
+					</div>
+					<div>
+						<label>Collection area</label><input type="text"
+							name="colection_area" id="colection_area"
+							value="" />
+					</div>
+					<div>
+						<label>Collection subarea</label><input type="text"
+							name="colection_subarea" id="colection_subarea"
+							value="" />
+					</div>
+					<div>
+						<label>Date of creation</label><input type="text"
+							name="date_of_creation" id="date_of_creation"
+							value="" />
+					</div>
+					<div>
+						<label>Export graph</label><input type="checkbox" name="export_graph" id="export_graph" value="1"/>
+					</div>
+
+					<br />
+					<div class="submitbtn">
+						<input type="submit" style="margin-left: 60px;" />
+					</div>
+				</form>
+
+
+				<br />
+				<div>Output: <span id="outputMessage"></span></div>
+				<div>  
+					<div id="outputDownload"></div>
+				</div>
+			</div>
 		</div>
 
-
+	<br />
+	<br />
+	<br />
+		<div class="ConceptVisualization">
+			<div id="mynetwork"></div>
+			<div id="infoDiv" class="graphInfo"></div>
+		</div>
+		
 		<div id="nu"></div>
 	</div>
-	<footer class="container-fluid text-center">
-	  <p>Footer Text</p>
-	</footer>
-	
-	</body>
-	</html>
-	
-	<script>
-	setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
 
-	</script>
+	<script src="js/semanticGraph.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/jsupload.js"></script>
+	<script src="js/main.js"></script>
+	<script src="js/header.js"></script>
+
+</body>
+</html>

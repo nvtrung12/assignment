@@ -160,13 +160,111 @@ public class QCBayesianNetwork {
 	 * @param kwargs
 	 * @throws Exception
 	 */
+	
 	public void classInit(Map<String, Set<String>> outNodes, Map<String, Set<String>> inNodes,
 			Set<String> questionNodes, Set<String> conceptNodes, Map<String, Object> kwargs) throws Exception {
 		this.logger.setLevel(Level.OFF);
+
+		this.outNodes = outNodes;
+		this.inNodes = inNodes;
+		this.questionNodes = questionNodes;
+		this.conceptNodes = conceptNodes;
+
+		Set<String> nodes = new HashSet<>(questionNodes);
+		nodes.addAll(conceptNodes);
+		for (String node : nodes)
+			if (this.inNodes.get(node) == null)
+				this.inNodes.put(node, new HashSet<>());
+		for (String node : nodes)
+			if (this.outNodes.get(node) == null)
+				this.outNodes.put(node, new HashSet<>());
+
+		double a = (double) kwargs.get("l");
+		double k = (double) kwargs.get("k");
+		double m = (double) kwargs.get("m");
+		double n = (double) kwargs.get("n");
+
+		double pQ = a;
+		this.pp = new HashMap<>();
+
+		// P(Qi) = a
+		for (String qNode : this.questionNodes) {
+			put(qNode, pQ);
+			put(getNeg(qNode), 1 - pQ);
+		}
+
+		// P(Ci) = k
+		for (String cNode : this.conceptNodes) {
+			put(cNode, k);
+			put(getNeg(cNode), 1 - k);
+		}
+
+		// P(C..|-Qj) = m
+		// P(C1C2|-Q1) = m
+		// P(C2|-Q2) = m
+		put("C1", getNeg("Q1"), Math.sqrt(m));
+		put("C2", getNeg("Q1"), Math.sqrt(m));
+
+		put("C2", getNeg("Q2"), m);
+
+		// ?
+		put("C3", getNeg("C1"), sqrt(n));
+		put("C4", getNeg("C1"), sqrt(n));
+
+		put("C4", getNeg("C2"), n);
+
+		put("C5", getNeg("C3"), n);
+		put("C5", getNeg("C4"), n);
 		
-		this.inNodes =new HashMap<>();
-		this.outNodes =new HashMap<>();
 		
+		//{Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], C5=[], C1=[C3, C4], C2=[C4]}
+		//incode {C3=[C1], Q1=[], C4=[C1, C2], Q2=[], C5=[C3, C4], C1=[Q1], C2=[Q1, Q2]}
+//		this.inNodes.forEach((key,value)->{
+//			value.forEach(s->{
+//				boolean isQuestion = false;
+//				for (String qu : questionNodes) {
+//					if (s.equals(qu)) {
+//						isQuestion = true;
+//						break;
+//					}
+//				}
+//				
+//				if (isQuestion) {
+//					//m
+//					
+////					System.out.println("question "+ key+" "+s);
+////					put(key, getNeg(s),Math.sqrt(m));
+//				}else {
+//					//n
+////					System.out.println("no question "+ key+" "+s);
+////					put(key, getNeg(s),Math.sqrt(n));
+//				}
+//			});
+//		});
+
+		// calculate and cache all adjective node
+		for (String node : nodes) {
+			for (String toNode : this.outNodes.get(node)) {
+				double p = p(node, toSet(toNode));
+				put(node, toNode, p);
+				put(getNeg(node), toNode, 1 - p);
+
+				p = p(toNode, toSet(node));
+				put(toNode, toSet(node), p);
+				put(getNeg(toNode), toSet(node), 1 - p);
+			}
+		}
+
+	}
+	
+	public void classInits(Map<String, Set<String>> outNodes, Map<String, Set<String>> inNodes,
+			Set<String> questionNodes, Set<String> conceptNodes, Map<String, Object> kwargs) throws Exception {
+		this.logger.setLevel(Level.OFF);
+		
+
+		this.outNodes = outNodes;
+		this.inNodes = inNodes;
+
 		this.outNodes = new HashMap<>(outNodes);
 		this.inNodes = new HashMap<>(inNodes);
 		this.questionNodes = questionNodes;

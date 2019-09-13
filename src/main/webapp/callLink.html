@@ -12,7 +12,7 @@
 	  <script src="js/semanticGraph.js"></script>
 	<script src="js/util.js"></script>
 	<script src="js/jsupload.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/callLink.js"></script>
 	<script src="js/header.js"></script>
 	  <script type="text/javascript" src="vis/dist/vis.js"></script>
 <script type="text/javascript" src="vis/dist/vis-network.min.js"></script>
@@ -93,8 +93,8 @@
 	      <p><a href="#">Link</a></p>
 	      <p><a href="#">Link</a></p> -->
 	    </div>
-	<h2 class="title" style="color:red;text-align:center">CBook Generation</h2>
-	<form class="form" id="f1" name="f1" method="post" enctype="multipart/form-data">
+	<h2 class="title" style="color:red;text-align:center">Call link</h2>
+	<form class="form" id="f2" name="f2" method="post" enctype="multipart/form-data">
 				<div class="col-sm-8 text-left">
 	
 					<div class="row">
@@ -103,171 +103,14 @@
 						</div>
 						<div class="col-xs-8 col-sm-8 col-lg-8">
 							<div class="form-group">
-								<input type="file" name="file" id="ebookFile" value="" /> <label
-									id="ebookUploaded"></label>
+								<input type="file" name="file" id="ebookFileC" value="" /> <label
+									id="ebookUploadedC"></label>
 							</div>
 						</div>
 					</div>
 	
 	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Equivalence list</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="equivalencefile" />
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Phrase list</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="phrasefile" id="phraseFile" />
-							<label id="phraseListUploaded"></label> 
-							<a href="download?fileName=defaults/Phrase_default.docx">Phrase_default.docx</a>
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Ignored concepts</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="stopwordfile" id="stopwordfile" />
-								<label id="ignoredConceptsUploaded"></label> 
-							<a href="download?fileName=defaults/Ignored_concept_default.txt">Ignored_concept_default.txt</a>
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-				<!-- 	<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Ebook (pdf/doc/docx)</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="file" name="file" id="ebookFile" value="" /> <label
-									id="ebookUploaded"></label>
-							</div>
-						</div>
-	
-					</div>
-	 -->
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Book title</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="book_title" id="book_title" value="" />
-							</div>
-						</div>
-	
-					</div>
-	
-	
-	
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Author</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="author" id="author" value="" />
-							</div>
-						</div>
-	
-					</div>
 					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Publisher</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="publisher" id="publisher" value="" />
-							</div>
-						</div>
-	
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>ISBN</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="isbn" id="isbn" value="" />
-							</div>
-						</div>
-	
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Date of publication</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="date_of_publication" value="" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Collection area</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text"
-								name="colection_area" id="colection_area"
-								value="" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Collection subarea</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text" name="colection_subarea" id="colection_subarea" value="" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Date of creation</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div class="form-group">
-								<input type="text"
-								name="date_of_creation" id="date_of_creation"
-								value="" />
-							</div>
-						</div>
-					</div>
 					
 					<div class="row">
 						<div class="col-xs-4 col-sm-4 col-lg-4">
@@ -343,10 +186,7 @@
 	</body>
 	</html>
 	
-	<script type="text/javascript">
-	if(childNodes[0])
-	setInterval(function(){ 	
-		document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' 
-		}, 1000);
+	<!-- <script>
+	setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
 
-	</script>
+	</script> -->
