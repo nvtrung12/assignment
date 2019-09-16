@@ -16,20 +16,11 @@ function queryGraph1(dataFile) {
 
 		success : function(res) {
 			console.info(res);
-		console.info(res.responseText);
-			var downloadData = "";
-			var jsonData = JSON.parse(res.responseText);
-			for (var i = 0; i < jsonData.length; i++) {
-				downloadData = downloadData + ' -- <a href="download?fileName=' + jsonData[i].fileName + '&fileFolder=' + jsonData[i].fileFolder + '" id="downloadLink_' + (i+1) + '">Concept File ' + (i+1) + '</a>';
-			}
-			$('#outputDownload').html(downloadData);
+			var data = res.fileDownload;
+			$('#outputDownload').html(data);
 
-			
-			
-			var data = res.grData; // raw JSON instead text of JSON (not need JSON.parse here)
+			// raw JSON instead text of JSON (not need JSON.parse here)
 			//buildGraph1(data, 'mynetwork');
-			
-			
 			
 		},
 		error : function(error) {

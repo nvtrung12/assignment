@@ -47,6 +47,7 @@ public class CallLinkApi extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String json = null;
 		// initial session for this userebookFileC
 		request.getSession();
 		String ebookFile = request.getParameter("ebookFileC");
@@ -62,8 +63,8 @@ public class CallLinkApi extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		json = Json.createObjectBuilder().add("fileDownload", result).build().toString();
 		response.setContentType("application/json");
-		response.getWriter().println(result);
+		response.getWriter().println(json);
 	}
 }
