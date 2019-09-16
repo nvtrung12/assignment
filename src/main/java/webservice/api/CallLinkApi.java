@@ -1,12 +1,15 @@
 package webservice.api;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 
+import webservice.Constants;
+
 @WebServlet(urlPatterns = { "/api/callLink" })
+@MultipartConfig
 public class CallLinkApi extends HttpServlet {
 
 	/**
@@ -39,22 +45,25 @@ public class CallLinkApi extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// initial session for this user
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// initial session for this userebookFileC
 		request.getSession();
-		List<Pair<String, String>> out = Utils.storeFiles(request, response);
+		String ebookFile = request.getParameter("ebookFileC");
 
-		JsonArrayBuilder arrJsonBuilder = Json.createArrayBuilder();
-
-		for (Pair<String, String> o : out) {
-			JsonObject js = Json.createObjectBuilder().add("fileName", o.getLeft()).add("storedFileName", o.getRight())
-					.build();
-			arrJsonBuilder.add(js);
+		String appPath = request.getServletContext().getRealPath("/");
+		String uploadFolder = String.format("%s/%s", appPath, "uploads/");
+		String downloadFolder = String.format("%s%s", appPath, "downloads/");
+		ProbabilatyProcess pp = new ProbabilatyProcess();
+		String result = null ;
+		try {
+			result = pp.probability(ebookFile, uploadFolder ,downloadFolder);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		String jsonReturn = Json.createObjectBuilder().add("status", 0).add("files", arrJsonBuilder.build()).build()
-				.toString();
-
+		
 		response.setContentType("application/json");
-		response.getWriter().println(jsonReturn);
+		response.getWriter().println(result);
 	}
 }

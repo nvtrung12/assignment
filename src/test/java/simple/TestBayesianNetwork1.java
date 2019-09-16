@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Level;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import bayesian.BayesianUtils;
 import bayesian.QCBayesianNetwork;
@@ -106,7 +108,8 @@ public class TestBayesianNetwork1 {
 		final String sheetAllNodes = "AllNodes";
 		final String nodeType = "Collection";//Concept
 		InputStream is = new FileInputStream(fileName);
-		Map<String, Object> out = BayesianUtils.loadSimpleNetworkFormat(is, sheetName ,sheetParam ,sheetAllNodes);
+		Workbook workbook = WorkbookFactory.create(is);
+		Map<String, Object> out = BayesianUtils.loadSimpleNetworkFormat(workbook, sheetName ,sheetParam ,sheetAllNodes);
 		//get data
 		Map<String, Set<String>> outNodes = (Map<String, Set<String>>) out.get("graph");
 		Map<String, Set<String>> inNodes = (Map<String, Set<String>>) out.get("graphToMe");

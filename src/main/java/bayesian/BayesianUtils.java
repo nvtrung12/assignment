@@ -30,12 +30,12 @@ public class BayesianUtils {
 	 * @throws InvalidFormatException
 	 * @throws EncryptedDocumentException
 	 */
-	public static Map<String, Object> loadSimpleNetworkFormat(InputStream inputStream, String sheetName,
+	public static Map<String, Object> loadSimpleNetworkFormat(Workbook workbook, String sheetName,
 			String sheetParam, String sheetAllNodes)
 			throws EncryptedDocumentException, InvalidFormatException, IOException {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		Map<String, String> element = new HashMap<String, String>();
-		Workbook workbook = WorkbookFactory.create(inputStream);
+		//Workbook workbook = WorkbookFactory.create(inputStream);
 
 		Sheet sheet = workbook.getSheet(sheetName);
 		Sheet sheetP = workbook.getSheet(sheetParam);
@@ -74,7 +74,7 @@ public class BayesianUtils {
 				element.put(sourceId, sourceName);
 			}
 		}
-		workbook.close();
+		//workbook.close();
 		Map<String, Collection<String>> x =  graphAdj.asMap();
 		Map<String, Set<String>> grapMap =  new HashMap<>();
 		x.forEach((k,v)->{
@@ -105,6 +105,8 @@ public class BayesianUtils {
 		ret.put("graphToMe", graphToMe2);//{C3=[C1], C4=[C1, C2], C5=[C3, C4], C1=[Q1], C2=[Q1, Q2]}
 		ret.put("allNode", allNode);
 		ret.put("collections", element);
+		ret.put("workbook", workbook);
 		return ret;
 	}
+	
 }
