@@ -63,7 +63,7 @@ public class CallLinkApi extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		json = Json.createObjectBuilder().add("fileDownload", result).add("fileName", ebookFile).build().toString();
+		json = Json.createObjectBuilder().add("fileDownload", appPath).add("fileName", ebookFile).build().toString();
 		response.setContentType("application/json");
 		response.getWriter().println(json);
 	}

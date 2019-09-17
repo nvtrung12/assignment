@@ -24,9 +24,15 @@ public class DownloadServlet extends HttpServlet {
 		response.setContentType("text/html");
 		String fileName = request.getParameter("fileName");
 		String fileFolder = request.getParameter("fileFolder");
+		
 		String appPath = request.getServletContext().getRealPath("/");
 		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
-		fileName = String.format("%s%s%s%s%s", downloadFolder, File.separator, fileFolder, File.separator, fileName);
+		
+		if(fileFolder==null || fileFolder.equals("")|| fileFolder.equals("null")) {
+			fileName = String.format("%s%s%s", downloadFolder, File.separator, fileName);
+		}else {
+			fileName = String.format("%s%s%s%s%s", downloadFolder, File.separator, fileFolder, File.separator, fileName);
+		}
 		File file = new File(fileName);
 		PrintWriter out = response.getWriter();
 		response.setContentType("APPLICATION/OCTET-STREAM");
