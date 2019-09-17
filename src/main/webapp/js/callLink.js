@@ -16,8 +16,10 @@ function queryGraph1(dataFile) {
 
 		success : function(res) {
 			console.info(res);
+			var fileName = res.fileName;
 			var data = res.fileDownload;
-			$('#outputDownload').html(data);
+			var link = ' <a href="' + data + '" id="downloadLink" target="_blank"> Download '+ fileName + '</a>';
+			$('#outputDownload').html(link);
 
 			// raw JSON instead text of JSON (not need JSON.parse here)
 			//buildGraph1(data, 'mynetwork');

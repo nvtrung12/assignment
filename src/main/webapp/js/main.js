@@ -21,6 +21,7 @@ function myDoPost() {
 
 		success : function(res) {
 			var downloadData = "";
+			
 			var jsonData = JSON.parse(res.fileDownload);
 			for (var i = 0; i < jsonData.length; i++) {
 				downloadData = downloadData + ' -- <a href="download?fileName=' + jsonData[i].fileName + '&fileFolder=' + jsonData[i].fileFolder + '" id="downloadLink_' + (i+1) + '">Concept File ' + (i+1) + '</a>';
