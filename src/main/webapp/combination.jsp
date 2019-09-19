@@ -336,19 +336,19 @@ footer {
 					<br></br>
 
 					<div class="row text-center">
-						<div class="col-xs-2 col-sm-2 col-lg-2">
+						<div class="col-xs-3 col-sm-3 col-lg-3">
 							<button class="btn btn-danger" type="button" id="deleteButton">Delete</button>
 						</div>
-						<div class="col-xs-2 col-sm-2 col-lg-2">
+						<div class="col-xs-3 col-sm-3 col-lg-3">
 							<button class="btn btn-success" type="button" id="mergeButton">Concept Merge</button>
 						</div>
 
-						<div class="col-xs-2 col-sm-2 col-lg-2">
+						<div class="col-xs-3 col-sm-3 col-lg-3">
 							<button type="button" class="btn btn-info id="mergeSentenceButton">Sentence
 								Merge</button>
 						</div>
 
-						<div class="col-xs-6 col-sm-6 col-lg-6"></div>
+						<div class="col-xs-3 col-sm-3 col-lg-3"></div>
 					</div>
 					<br></br>
 					<div class="row">
