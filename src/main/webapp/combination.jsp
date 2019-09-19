@@ -315,12 +315,12 @@ footer {
 				<div class="col-sm-8 text-left">
 
 					<div class="row text-center">
-						<div class="col-xs-8 col-sm-8 col-lg-8">
+						<div class="col-xs-12 col-sm-12 col-lg-12">
 							<h2 class="title" style="color: red;">Text Extraction
 								Combination</h2>
 							<br></br>
 						</div>
-						<div class="col-xs-4 col-sm-4 col-lg-4"></div>
+						
 					</div>
 
 					<div class="row">
@@ -335,7 +335,7 @@ footer {
 					</div>
 					<br></br>
 
-					<div class="row">
+					<div class="row text-center">
 						<div class="col-xs-2 col-sm-2 col-lg-2">
 							<button class="btn btn-danger" type="button" id="deleteButton">Delete</button>
 						</div>

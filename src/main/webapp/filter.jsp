@@ -233,13 +233,11 @@ footer {
 				<div class="col-sm-8 text-left">
 				
 				<div class="row text-center">
-						<div class="col-xs-8 col-sm-8 col-lg-8">
+						<div class="col-xs-12 col-sm-12 col-lg-12">
 							<h2 class="title" style="color:red;">Concept Space Visualization</h2>
 							<br></br>
 						</div>
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							
-						</div>
+						
 					</div>
 
 
@@ -401,7 +399,7 @@ footer {
 					</div>
 					
 					
-					<div class="row">
+					<div class="row text-center">
 						<div class="col-xs-4 col-sm-4 col-lg-4">
 							<div class="submitbtn">
 								<button class="btn btn-danger btn-md" id="btnSubmit" type="submit">Submit</button>
