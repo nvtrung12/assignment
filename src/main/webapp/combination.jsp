@@ -314,7 +314,7 @@ footer {
 
 				<div class="col-sm-8 text-left">
 
-					<div class="row">
+					<div class="row text-center">
 						<div class="col-xs-8 col-sm-8 col-lg-8">
 							<h2 class="title" style="color: red;">Text Extraction
 								Combination</h2>
