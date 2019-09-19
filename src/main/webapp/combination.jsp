@@ -327,11 +327,11 @@ footer {
 						<div class="col-xs-2 col-sm-2 col-lg-2">
 							<label>Add Cbook</label>
 						</div>
-						<div class="col-xs-6 col-sm-6 col-lg-6">
+						<div class="col-xs-8 col-sm-8 col-lg-8">
 							<input  class="form-control" type="file" name="upload[]" id="fileupload"
 								multiple="multiple" />
 						</div>
-						<div class="col-xs-4 col-sm-4 col-lg-4"></div>
+						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
 					</div>
 					<br></br>
 
@@ -355,10 +355,10 @@ footer {
 						<div class="col-xs-2 col-sm-2 col-lg-2">
 							<label>Equivalence degree</label>
 						</div>
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<input class="form-control" id="threshold" name="threshold" value="0.8" />
+						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<input class="form-control input-sm" id="threshold" name="threshold" value="0.8" />
 						</div>
-						<div class="col-xs-6 col-sm-6 col-lg-6">
+						<div class="col-xs-2 col-sm-2 col-lg-2">
 							
 						</div>
 					</div>
@@ -372,7 +372,7 @@ footer {
 								<div class="status">0%</div>
 							</div>
 						</div>
-
+						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
 
 
 					</div>
