@@ -38,7 +38,7 @@
      
 			for (var i = 0; i < arrayLength; i++) {
     			// document.getElementById('list_filter').innerHTML = '{' + filter_lists + '}';
-    			str += "<li>" + filter_lists[i] + "&emsp; <input id=\"btnRemove\" type=\"button\" value=\"Remove\" onClick=\"removeFilter(" + i + ")\"/>" + "</li>";  
+    			str += "<li>" + filter_lists[i] + "&emsp; <button class=\"btn btn-danger btn-sm\" id=\"btnRemove\" type=\"button\" value=\"Remove\" onClick=\"removeFilter(" + i + ")\">Remove</button>" + "</li>";  
     			//Do something
     		}
     		str += "</ul>";
@@ -170,6 +170,9 @@
 	/* background-color: #f1f1f1; */
 	height: 100%;
 }
+.form-control {
+    margin-bottom: 15px;
+    }
 
 /* Set black background color, white text and some padding */
 footer {
@@ -224,7 +227,7 @@ footer {
 	      <p><a href="#">Link</a></p>
 	      <p><a href="#">Link</a></p> -->
 			</div>
-			<form class="form-horizontal" action="filter" method="post"
+			<form action="filter" method="post"
 					enctype="multipart/form-data" id="filterForm">
 			
 				<div class="col-sm-8 text-left">
@@ -318,7 +321,7 @@ footer {
 							
 						</div>
 						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<button class="btn btn-danger btn-sm" id="btnAdd" type="button" onClick="addFilter()">Add</button>
+							<button class="btn btn-danger btn-md" id="btnAdd" type="button" onClick="addFilter()">Add</button>
 						</div>
 					</div>
 					
@@ -326,11 +329,11 @@ footer {
 						<div class="col-xs-4 col-sm-4 col-lg-4">
 							<div class="autocomplete">
 							<label>List of filters</label> 
-								<span id='list_filter'> </span>
+								<span id="list_filter"> </span>
 						</div>
 						</div>
 						<div class="col-xs-8 col-sm-8 col-lg-8">
-							
+							<br></br>
 						</div>
 					</div>
 					
@@ -405,7 +408,7 @@ footer {
 							</div>
 						</div>
 						<div class="col-xs-8 col-sm-8 col-lg-8">
-							
+							<br></br><br></br>
 						</div>
 					</div>
 					
