@@ -11,146 +11,14 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 <script type="text/javascript" src="vis/dist/vis.js"></script>
 <script type="text/javascript" src="vis/dist/vis-network.min.js"></script>
 <link href="vis/dist/vis-network.min.css" rel="stylesheet"
 	type="text/css" />
+
 <!-- <link rel="stylesheet" type="text/css" href="css/autocomplete.css">
 <link rel="stylesheet" type="text/css" href="css/style.css"> -->
-<script src="js/autocomplete.js"></script>
-	<script src="js/jsupload.js"></script>
-	<script src="js/util.js"></script>
-	<script src="js/semanticGraph.js"></script>
-	<script>
-		var data = ${gr_data};
-	</script>
-	<script>
-		var id_values = ${default_id_values};
-	</script>
-	<script>
-		var concepts = [ "computer", "os" ];
-		var filter_lists = []; // contains the list of filters 
-		var server_file = null; // if have is a string, a file name that uploaded to server, can be reused 
-		
-		function renderHTML() {
-			var arrayLength = filter_lists.length;
-			var str = "<br><ul style=\"list-style-type:circle\">";                       
-     
-			for (var i = 0; i < arrayLength; i++) {
-    			// document.getElementById('list_filter').innerHTML = '{' + filter_lists + '}';
-    			str += "<li>" + filter_lists[i] + "&emsp; <button class=\"btn btn-danger btn-sm\" id=\"btnRemove\" type=\"button\" value=\"Remove\" onClick=\"removeFilter(" + i + ")\">Remove</button>" + "</li>";  
-    			//Do something
-    		}
-    		str += "</ul>";
-    		return str;
-		}
-		
-		// This function handles the the function of adding filter
-		function addFilter() {			 			
-			filter_lists.push(document.getElementById("filter_concept").value + ': ' + document.getElementById("numhops").value);
-			document.getElementById('list_filter').innerHTML = renderHTML();	//hungchange		 
-		}		
-		
-		function removeFilter(i) {
-			filter_lists.splice(i, 1);
-			document.getElementById('list_filter').innerHTML = renderHTML(); 
-		}
-		
-		function showUploadedFile(fname) {
-			$('#uploaded_file').val(server_file);
-			$('#show_uploaded_file').html(server_file.substring(server_file.indexOf('.')+1));
-			
-			$.getJSON("api/getConceptsList?dataFileName=" + server_file,
-					function(data, status) {
-						concepts = data;
-						// recall to update
-						autocomplete(document.getElementById("filter_concept"),
-								concepts);
-					});
-		}
-		
-		function uploadFileDone(data) {
-			server_file = data.files[0].storedFileName;
-
-			$.getJSON("api/getConceptsList?dataFileName=" + server_file,
-					function(data, status) {
-						concepts = data;
-						// recall to update
-						autocomplete(document.getElementById("filter_concept"),
-								concepts);
-					});
-			
-			if (server_file)
-				showUploadedFile(server_file);
-		}
-		
-		
-		// call ajax /api/v1.1/filter and call /api/v1.1/graph to show
-		function myDoPost() {
-			$.ajax({
-				type : "POST",
-				url : "api/v1.1/filter",
-				data: { 'uploaded_file' : $('#uploaded_file').val(), 'filters' : filter_lists.join('|')},
-				dataType: "json",
-				  
-				success : function(res) {
-					if (res.status == 0) {
-						// this file always in downloads folder
-						mergeFile = "downloads/" + res.filterFileName;
-						queryGraph(mergeFile);
-						$('#downloadLink').attr('href', 'download?fileName=' + res.filterFileName);
-					} else {
-						alert(res.message);
-					}
-				},
-				error : function(error) {
-					console.log(error);
-				},
-				async : true,
-				timeout : 60000
-			});
-		}
-
-		$(document).ready(function() {
-
-			$("#filterForm").submit(function(e){
-				myDoPost();
-			    return false;
-			});
-
-			// for upload file when user choose (not wait to submit, use to get list of concept)
-			$("#file").on("change", function(e) {
-				var files = $(this)[0].files;
-				for (var i = 0; i < files.length; ++i) {
-					file = files[i];
-					var upload = new Upload(file, uploadFileDone);
-
-					// execute upload
-					upload.doUpload();
-				}
-			});
-
-			autocomplete(document.getElementById("filter_concept"), concepts);
-
-			build_graph(data);
-			
-			// default value
-			if (id_values && id_values['filter_concept'])
-				$('#filter_concept').val(id_values['filter_concept']);
-			if (id_values && id_values['numhops'])
-				$('#numhops').val(id_values['numhops']);
-			
-			// reused uploaded file
-			if (id_values && id_values['uploaded_file']) {
-				$('#uploaded_file').val(id_values['uploaded_file']);
-				server_file = id_values['uploaded_file'];
-				showUploadedFile(server_file);
-			}
-			
-
-		});
-	</script>
-	<script src="js/header.js"></script>
 
 <style>
 /* Remove the navbar's default margin-bottom and rounded borders */
@@ -246,15 +114,17 @@ footer {
 							<label>Cbook/VCbook</label>
 						</div>
 						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<input  class="form-control" type="file" name="file" id="ebookFileC" value="" />
+							<input type="file" name="file" class="form-control"
+							id="file" />
 						</div>
 					</div>
 					
 					<div class="row">
 						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<label>Uploaded</label><label id="show_uploaded_file" style="width: 20em;"></label>
+							<label>Uploaded</label>
 						</div>
 						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<label  class="font-italic" id="show_uploaded_file" style="width: 20em;"></label>
 							<input  class="form-control" type="hidden" name="uploaded_file" id="uploaded_file" />
 						</div>
 					</div>
@@ -405,11 +275,30 @@ footer {
 								<button class="btn btn-danger btn-md" id="btnSubmit" type="submit">Submit</button>
 							</div>
 						</div>
-							<br></br><br></br>
+							
 					</div>
 					
 					
+					<div class="row">
+						<div class="col-xs-4 col-sm-4 col-lg-4">
+							<label>Export graph</label>
+						</div>
+						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<div class="form-check-inline">
+							  <label class="form-check-label">
+							    <input type="radio" class="form-check-input" name="optradio"> Visualization
+							  </label>
+							</div>
+							<div class="form-check-inline">
+							  <label class="form-check-label">
+							    <input type="radio" class="form-check-input" name="optradio"> Callink
+							  </label>
+							</div>
+						</div>
+						<br></br><br></br>
+					</div>
 					
+	
 
 					<div class="row">
 						<div class="col-xs-4 col-sm-4 col-lg-4">
@@ -458,9 +347,139 @@ footer {
 	</footer> -->
 
 </body>
+<script src="js/autocomplete.js"></script>
+	<script src="js/jsupload.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/semanticGraph.js"></script>
+	<script>
+		var data = ${gr_data};
+	</script>
+	<script>
+		var id_values = ${default_id_values};
+	</script>
+	<script>
+		var concepts = [ "computer", "os" ];
+		var filter_lists = []; // contains the list of filters 
+		var server_file = null; // if have is a string, a file name that uploaded to server, can be reused 
+		
+		function renderHTML() {
+			var arrayLength = filter_lists.length;
+			var str = "<br><ul style=\"list-style-type:circle\">";                       
+     
+			for (var i = 0; i < arrayLength; i++) {
+    			// document.getElementById('list_filter').innerHTML = '{' + filter_lists + '}';
+    			str += "<li>" + filter_lists[i] + "&emsp; <button class=\"btn btn-danger btn-sm\" id=\"btnRemove\" type=\"button\" value=\"Remove\" onClick=\"removeFilter(" + i + ")\">Remove</button>" + "</li>";  
+    			//Do something
+    		}
+    		str += "</ul>";
+    		return str;
+		}
+		
+		// This function handles the the function of adding filter
+		function addFilter() {			 			
+			filter_lists.push(document.getElementById("filter_concept").value + ': ' + document.getElementById("numhops").value);
+			document.getElementById('list_filter').innerHTML = renderHTML();	//hungchange		 
+		}		
+		
+		function removeFilter(i) {
+			filter_lists.splice(i, 1);
+			document.getElementById('list_filter').innerHTML = renderHTML(); 
+		}
+		
+		function showUploadedFile(fname) {
+			$('#uploaded_file').val(server_file);
+			$('#show_uploaded_file').html(server_file.substring(server_file.indexOf('.')+1));
+			
+			$.getJSON("api/getConceptsList?dataFileName=" + server_file,
+					function(data, status) {
+						concepts = data;
+						// recall to update
+						autocomplete(document.getElementById("filter_concept"),
+								concepts);
+					});
+		}
+		
+		function uploadFileDone(data) {
+			server_file = data.files[0].storedFileName;
+
+			$.getJSON("api/getConceptsList?dataFileName=" + server_file,
+					function(data, status) {
+						concepts = data;
+						// recall to update
+						autocomplete(document.getElementById("filter_concept"),
+								concepts);
+					});
+			
+			if (server_file)
+				showUploadedFile(server_file);
+		}
+		
+		
+		// call ajax /api/v1.1/filter and call /api/v1.1/graph to show
+		function myDoPost() {
+			$.ajax({
+				type : "POST",
+				url : "api/v1.1/filter",
+				data: { 'uploaded_file' : $('#uploaded_file').val(), 'filters' : filter_lists.join('|')},
+				dataType: "json",
+				  
+				success : function(res) {
+					if (res.status == 0) {
+						// this file always in downloads folder
+						mergeFile = "downloads/" + res.filterFileName;
+						queryGraph(mergeFile);
+						$('#downloadLink').attr('href', 'download?fileName=' + res.filterFileName);
+					} else {
+						alert(res.message);
+					}
+				},
+				error : function(error) {
+					console.log(error);
+				},
+				async : true,
+				timeout : 60000
+			});
+		}
+
+		$(document).ready(function() {
+
+			$("#filterForm").submit(function(e){
+				myDoPost();
+			    return false;
+			});
+
+			// for upload file when user choose (not wait to submit, use to get list of concept)
+			$("#file").on("change", function(e) {
+				var files = $(this)[0].files;
+				for (var i = 0; i < files.length; ++i) {
+					file = files[i];
+					var upload = new Upload(file, uploadFileDone);
+
+					// execute upload
+					upload.doUpload();
+				}
+			});
+
+			autocomplete(document.getElementById("filter_concept"), concepts);
+
+			build_graph(data);
+			
+			// default value
+			if (id_values && id_values['filter_concept'])
+				$('#filter_concept').val(id_values['filter_concept']);
+			if (id_values && id_values['numhops'])
+				$('#numhops').val(id_values['numhops']);
+			
+			// reused uploaded file
+			if (id_values && id_values['uploaded_file']) {
+				$('#uploaded_file').val(id_values['uploaded_file']);
+				server_file = id_values['uploaded_file'];
+				showUploadedFile(server_file);
+			}
+			
+
+		});
+	</script>
+	<script src="js/header.js"></script>
 </html>
 
-<!-- <script>
-	setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
-
-	</script> -->

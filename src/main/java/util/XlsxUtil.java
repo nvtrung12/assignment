@@ -252,7 +252,11 @@ public class XlsxUtil {
 	 * @throws Exception
 	 */
 	public static List<List<String>> readXlsx(String filePath, String sheetName) throws Exception {
-		Workbook workbook = WorkbookFactory.create(new File(filePath), null, true);
+		File newFile = new File(filePath);
+		if (!newFile.exists()) {
+			newFile.createNewFile();
+		}
+		Workbook workbook = WorkbookFactory.create(newFile, null, true);
 
 		Sheet sheet = workbook.getSheet(sheetName);
 
@@ -289,7 +293,9 @@ public class XlsxUtil {
 	
 	public static List<List<String>> readFolderXlsx(String filePath, String sheetName) throws Exception {
 		List<List<String>> ret = new LinkedList<>();
-		for(File file: new File(filePath).listFiles()) {
+		File nfile = new File(filePath);
+		File[] lstFile = nfile.listFiles();
+		for(File file: lstFile) {
 			String fileName = file.getName();
 			if(fileName.endsWith(".xlsx")) {
 				Workbook workbook = WorkbookFactory.create(file, null, true);

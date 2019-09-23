@@ -14,6 +14,7 @@ function queryGraph(dataFile) {
 
 		success : function(res) {
 			data = JSON.parse(res.grData);
+			console.info('data', data);
 			build_graph(data);
 			if (res.message) {
 				$('#outputMessage').html(res.message);

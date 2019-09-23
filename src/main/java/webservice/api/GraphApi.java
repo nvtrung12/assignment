@@ -1,6 +1,5 @@
 package webservice.api;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -77,10 +76,10 @@ public class GraphApi extends HttpServlet {
 		}
 
 		// convert to full path
-		downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, fileName);
+		//downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, fileName);
 
 		try {
-
+			//TODO
 			List<List<String>> connections = XlsxUtil.readFolderXlsx(downloadFolder, Constants.ConnectionSheetName);
 			List<List<String>> concepts = XlsxUtil.readFolderXlsx(downloadFolder, Constants.ConceptSheetName);
 
@@ -111,6 +110,7 @@ public class GraphApi extends HttpServlet {
 				message = keepNodes > concepts.size() ? "" : "For the large graph, we keep only 200 nodes!";
 
 				// new way to filter
+				//get if NodeName = null -> get (0) , k thì get()
 				List<String> nodes = concepts.stream()
 						.map(o -> o.get(xpos).equals("NULL") ? o.get(nodeIdpos) : o.get(xpos))
 						.collect(Collectors.toList());

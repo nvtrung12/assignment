@@ -4,19 +4,24 @@
 <title>Generation book system</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script
+	src="///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="///cdn.jsdelivr.net/npm/vue"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-<script src="///cdn.jsdelivr.net/npm/vue"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
 <script type="text/javascript" src="vis/dist/vis.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript" src="vis/dist/vis-network.min.js"></script>
 <link href="vis/dist/vis-network.min.css" rel="stylesheet"
 	type="text/css" />
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
+
 <!-- <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/style-combination.css"> -->
 <style>
@@ -106,6 +111,160 @@ footer {
 }
 </style>
 
+	
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a href="./index.html">CBook Generation</a></li>
+					<li><a href="./combination.jsp">Extraction Combination</a></li>
+					<li><a href="./filter.jsp">Visualization</a></li>
+					<li><a href="./callLink.html">Call Link</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid text-center">
+		<div class="row content">
+			<div class="col-sm-2 sidenav">
+				<!-- <p><a href="#">Link</a></p>
+	      <p><a href="#">Link</a></p>
+	      <p><a href="#">Link</a></p> -->
+			</div>
+			<form class="form" action="merge" method="post" enctype="multipart/form-data">
+
+				<div class="col-sm-8 text-left">
+
+					<div class="row text-center">
+						<div class="col-xs-12 col-sm-12 col-lg-12">
+							<h2 class="title" style="color: red;">Text Extraction
+								Combination</h2>
+							<br></br>
+						</div>
+						
+					</div>
+
+					<div class="row">
+						<div class="col-xs-2 col-sm-2 col-lg-2">
+							<label>Add Cbook</label>
+						</div>
+						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<input  class="form-control" type="file" name="upload[]" id="fileupload"
+								multiple="multiple" />
+						</div>
+						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
+					</div>
+					<br></br>
+
+					<div class="row text-center">
+						<div class="col-xs-3 col-sm-3 col-lg-3">
+							<button class="btn btn-danger" type="button" id="deleteButton">Delete</button>
+						</div>
+						<div class="col-xs-3 col-sm-3 col-lg-3">
+							<button class="btn btn-success" type="button" id="mergeButton">Concept Merge</button>
+						</div>
+
+						<div class="col-xs-3 col-sm-3 col-lg-3">
+							<button type="button" class="btn btn-info id="mergeSentenceButton">Sentence
+								Merge</button>
+						</div>
+
+						<div class="col-xs-3 col-sm-3 col-lg-3"></div>
+					</div>
+					<br></br>
+					<div class="row">
+						<div class="col-xs-2 col-sm-2 col-lg-2">
+							<label>Equivalence degree</label>
+						</div>
+						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<input class="form-control input-sm" id="threshold" name="threshold" value="0.8" />
+						</div>
+						<div class="col-xs-2 col-sm-2 col-lg-2">
+							
+						</div>
+					</div>
+
+					<div class="row">
+
+						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
+						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<div id="progress-wrp">
+								<div class="progress-bar"></div>
+								<div class="status">0%</div>
+							</div>
+						</div>
+						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
+
+
+					</div>
+
+					<div class="row">
+						<div class="col-xs-4 col-sm-4 col-lg-4">
+							<div id="#booksUploaded">
+								<fieldset id="checkArray">
+						<div v-for="cbook in cbooks">
+							<input type="checkbox" name="cbookselect[]" v-model="cbook"
+								:id="'cbook ' + cbook.fileName" :value="cbook.storedFileName" /> <!-- label-->{{cbook.fileName}}<!-- /label-->
+						</div>
+					</fieldset>
+							</div>
+						</div>
+						<div class="col-xs-8 col-sm-8 col-lg-8"></div>
+					</div>
+
+					<br></br>
+
+					<div class="row">
+						<div class="col-xs-2 col-sm-2 col-lg-2">Output: ${message}</div>
+						<div class="col-xs-8 col-sm-8 col-lg-8">
+							<a id="downloadLink"
+								href="download?fileName=${combinedConceptFile}">Combined
+								concepts</a>
+						</div>
+					</div>
+
+				</div>
+
+		</form>
+
+		<div class="col-sm-2 sidenav">
+		</div>
+	</div>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-lg-12">
+				<div class="ConceptVisualization">
+					<div id="eachGraph" class="grid-container"></div>
+		
+					<div id="mynetwork"></div>
+					<div id="infoDiv" class="graphInfo"></div>
+				</div>
+			</div>
+
+		</div>
+
+
+		<div id="nu"></div>
+	</div>
 <script type="text/javascript">
 		var data = ${gr_data};
 	</script>
@@ -114,19 +273,21 @@ footer {
 	
 	<script>
 	var lstBook = [];
-	var mergeFile = null;
-
+	var addEventListener = null;
 	var demo = new Vue({
-		  el: "#booksUploaded",
+		  el: "booksUploaded",
 		  data() {
 		    return {
 		      cbooks: []
 		    };
 		  }
 		});
+	
+	  
 
 	// this function call merge concept only
 	function postMerge(tmp, divId="mynetwork", realNames="") {
+		console.info('tmp' ,tmp);
 		$.ajax({
 			type : "POST",
 			url : "api/v1.1/merge",
@@ -134,11 +295,12 @@ footer {
 			dataType: "json",
 
 			success : function(res) {
+				console.info('fileeeeee',res.file);
 				// store merge file to reuse in merge sentence
 				// in this case, file always in downloads folder
-				mergeFile = "downloads/" + res.file;
+				//mergeFile = "downloads/" + res.file;
 				$('#downloadLink').attr('href', 'download?fileName=' + res.file);
-				queryGraph(mergeFile, divId);
+				queryGraph(res.file, divId);
 			},
 			error : function(error) {
 				console.log(error); // TODO
@@ -275,162 +437,6 @@ footer {
 
 	</script>
 	<script src="js/header.js"></script>
-	
-</head>
-<body>
-
-	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#myNavbar">
-					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-
-			</div>
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav">
-					<li><a href="./index.html">CBook Generation</a></li>
-					<li><a href="./combination.jsp">Extraction Combination</a></li>
-					<li><a href="./filter.jsp">Visualization</a></li>
-					<li><a href="./callLink.html">Call Link</a></li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
-				</ul>
-			</div>
-		</div>
-	</nav>
-
-	<div class="container-fluid text-center">
-		<div class="row content">
-			<div class="col-sm-2 sidenav">
-				<!-- <p><a href="#">Link</a></p>
-	      <p><a href="#">Link</a></p>
-	      <p><a href="#">Link</a></p> -->
-			</div>
-			<form class="form" action="merge" method="post" enctype="multipart/form-data">
-
-				<div class="col-sm-8 text-left">
-
-					<div class="row text-center">
-						<div class="col-xs-12 col-sm-12 col-lg-12">
-							<h2 class="title" style="color: red;">Text Extraction
-								Combination</h2>
-							<br></br>
-						</div>
-						
-					</div>
-
-					<div class="row">
-						<div class="col-xs-2 col-sm-2 col-lg-2">
-							<label>Add Cbook</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<input  class="form-control" type="file" name="upload[]" id="fileupload"
-								multiple="multiple" />
-						</div>
-						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
-					</div>
-					<br></br>
-
-					<div class="row text-center">
-						<div class="col-xs-3 col-sm-3 col-lg-3">
-							<button class="btn btn-danger" type="button" id="deleteButton">Delete</button>
-						</div>
-						<div class="col-xs-3 col-sm-3 col-lg-3">
-							<button class="btn btn-success" type="button" id="mergeButton">Concept Merge</button>
-						</div>
-
-						<div class="col-xs-3 col-sm-3 col-lg-3">
-							<button type="button" class="btn btn-info id="mergeSentenceButton">Sentence
-								Merge</button>
-						</div>
-
-						<div class="col-xs-3 col-sm-3 col-lg-3"></div>
-					</div>
-					<br></br>
-					<div class="row">
-						<div class="col-xs-2 col-sm-2 col-lg-2">
-							<label>Equivalence degree</label>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<input class="form-control input-sm" id="threshold" name="threshold" value="0.8" />
-						</div>
-						<div class="col-xs-2 col-sm-2 col-lg-2">
-							
-						</div>
-					</div>
-
-					<div class="row">
-
-						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<div id="progress-wrp">
-								<div class="progress-bar"></div>
-								<div class="status">0%</div>
-							</div>
-						</div>
-						<div class="col-xs-2 col-sm-2 col-lg-2"></div>
-
-
-					</div>
-
-					<div class="row">
-						<div class="col-xs-4 col-sm-4 col-lg-4">
-							<div id="booksUploaded">
-								<fieldset id="checkArray">
-									<div v-for="cbook in cbooks">
-										<input type="checkbox" name="cbookselect[]" v-model="cbook"
-											:id="'cbook ' + cbook.fileName" :value="cbook.storedFileName" />
-										{{cbook.fileName }}
-									</div>
-								</fieldset>
-							</div>
-						</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8"></div>
-					</div>
-
-					<br></br>
-
-					<div class="row">
-						<div class="col-xs-2 col-sm-2 col-lg-2">Output: ${message}</div>
-						<div class="col-xs-8 col-sm-8 col-lg-8">
-							<a id="downloadLink"
-								href="download?fileName=${combinedConceptFile}">Combined
-								concepts</a>
-						</div>
-					</div>
-
-				</div>
-
-		</form>
-
-		<div class="col-sm-2 sidenav">
-		</div>
-	</div>
-	</div>
-	<br />
-	<br />
-	<br />
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12 col-lg-12">
-				<div class="ConceptVisualization">
-					<div id="eachGraph" class="grid-container"></div>
-		
-					<div id="mynetwork"></div>
-					<div id="infoDiv" class="graphInfo"></div>
-				</div>
-			</div>
-
-		</div>
-
-
-		<div id="nu"></div>
-	</div>
-
 </body>
 </html>
 
