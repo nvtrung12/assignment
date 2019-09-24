@@ -57,75 +57,98 @@ public class FilterApi extends HttpServlet {
 
 	private void doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("application/json");
+		String radioGraph = request.getParameter("isGraph");
+		if ("CALL".equals(radioGraph)) {
+			String json = null;
+			// initial session for this userebookFileC
+			request.getSession();
+			String appPath = request.getServletContext().getRealPath("/");
+			String ebookFile = request.getParameter("uploaded_file");
+			String uploadFolder = String.format("%s/%s", appPath, "uploads/");
+			String downloadFolder = String.format("%s%s", appPath, "downloads/");
+			
+			ProbabilatyProcess pp = new ProbabilatyProcess();
+			String result = null ;
+			try {
+				result = pp.probability(ebookFile, uploadFolder ,downloadFolder);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			json = Json.createObjectBuilder().add("fileDownload", appPath).add("fileName", ebookFile).build().toString();
+			response.setContentType("application/json");
+			response.getWriter().println(json);
+		} else {
+			String uuid = UUID.randomUUID().toString().replace("-", "");
+			String appPath = this.getServletContext().getRealPath("/");
+			String ccName = String.format("filter_concepts.%s.xlsx", uuid);
 
-		String uuid = UUID.randomUUID().toString().replace("-", "");
-		String appPath = this.getServletContext().getRealPath("/");
-		String ccName = String.format("filter_concepts.%s.xlsx", uuid);
+			String uploadFolder = String.format("%s%s", appPath, Constants.UPLOAD_FOLDER);
+			String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
+			String cpath = String.format("%s%s%s", downloadFolder, File.separator, ccName);
 
-		String uploadFolder = String.format("%s%s", appPath, Constants.UPLOAD_FOLDER);
-		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
-		String cpath = String.format("%s%s%s", downloadFolder, File.separator, ccName);
-
-		// get from query
-		String fileToProcess = request.getParameter("uploaded_file");
-		logger.debug("fileName: " + fileToProcess);
-		String fileToProcessPath = String.format("%s%s%s", uploadFolder, File.separator, fileToProcess);
-
-		try {
-
-			// TODO get filter and nhops
-			String filters = request.getParameter("filters").trim();
-			logger.debug("filters: " + filters);
-
-			// default if not given then show full
-			if ("".equals(filters))
-				filters = ":2";
-
-			if (null == filters)
-				throw new Exception("No filter given");
-
-			Map<String, Integer> info = new HashMap<>();
+			// get from query
+			String fileToProcess = request.getParameter("uploaded_file");
+			logger.debug("fileName: " + fileToProcess);
+			String fileToProcessPath = String.format("%s%s%s", uploadFolder, File.separator, fileToProcess);
 
 			try {
-				String[] tmp = filters.split(SEP);
-				List<String[]> tmp1 = Arrays.asList(tmp).stream().map(o -> o.split(FSEP)).collect(Collectors.toList());
 
-				for (String[] o : tmp1) {
-					info.put(o[0], Integer.parseInt(o[1].trim()));
+				// TODO get filter and nhops
+				String filters = request.getParameter("filters").trim();
+				logger.debug("filters: " + filters);
+
+				// default if not given then show full
+				if ("".equals(filters))
+					filters = ":2";
+
+				if (null == filters)
+					throw new Exception("No filter given");
+
+				Map<String, Integer> info = new HashMap<>();
+
+				try {
+					String[] tmp = filters.split(SEP);
+					List<String[]> tmp1 = Arrays.asList(tmp).stream().map(o -> o.split(FSEP)).collect(Collectors.toList());
+
+					for (String[] o : tmp1) {
+						info.put(o[0], Integer.parseInt(o[1].trim()));
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new Exception("Filter wrong format");
 				}
 
+				// filter
+				Map<String, Object> ret = GraphApiHelper.filterGraph(fileToProcessPath, info);
+
+				// write
+				List<List<Object>> concepts = (List<List<Object>>) ret.get(Constants.ConceptSheetName);
+				List<List<Object>> connection = (List<List<Object>>) ret.get(Constants.ConnectionSheetName);
+
+				// add header
+				concepts.add(0, Arrays.asList(Constants.CONCEPT_HEADER));
+				connection.add(0, Arrays.asList(Constants.CONNECT_HEADER));
+
+				XlsxUtil.writeXlsx(cpath, Constants.ConceptSheetName, concepts);
+				XlsxUtil.writeRowsXlsxAppend(cpath, Constants.ConnectionSheetName, connection);
+				XlsxUtil.writeRowsXlsxAppend(cpath, Constants.META_SHEET_NAME, new LinkedList<>());
+
+				// return json
+				// filter file name in downloads folder
+				// must call separated api to show graph
+				String jsonReturn = Json.createObjectBuilder().add("status", 0).add("filterFileName", ccName).build()
+						.toString();
+				response.getWriter().println(jsonReturn);
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw new Exception("Filter wrong format");
+				String jsonReturn = Json.createObjectBuilder().add("status", 1).add("message", e.getMessage()).build()
+						.toString();
+				response.getWriter().println(jsonReturn);
 			}
-
-			// filter
-			Map<String, Object> ret = GraphApiHelper.filterGraph(fileToProcessPath, info);
-
-			// write
-			List<List<Object>> concepts = (List<List<Object>>) ret.get(Constants.ConceptSheetName);
-			List<List<Object>> connection = (List<List<Object>>) ret.get(Constants.ConnectionSheetName);
-
-			// add header
-			concepts.add(0, Arrays.asList(Constants.CONCEPT_HEADER));
-			connection.add(0, Arrays.asList(Constants.CONNECT_HEADER));
-
-			XlsxUtil.writeXlsx(cpath, Constants.ConceptSheetName, concepts);
-			XlsxUtil.writeRowsXlsxAppend(cpath, Constants.ConnectionSheetName, connection);
-			XlsxUtil.writeRowsXlsxAppend(cpath, Constants.META_SHEET_NAME, new LinkedList<>());
-
-			// return json
-			// filter file name in downloads folder
-			// must call separated api to show graph
-			String jsonReturn = Json.createObjectBuilder().add("status", 0).add("filterFileName", ccName).build()
-					.toString();
-			response.getWriter().println(jsonReturn);
-		} catch (Exception e) {
-			e.printStackTrace();
-			String jsonReturn = Json.createObjectBuilder().add("status", 1).add("message", e.getMessage()).build()
-					.toString();
-			response.getWriter().println(jsonReturn);
 		}
+		
 	}
 
 	protected final String SEP = "\\|"; // re for | then must be has \\

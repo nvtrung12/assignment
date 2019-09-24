@@ -63,10 +63,10 @@ public class BayesianUtils {
 		MultiValuedMap<String, String> graphToMe = new ArrayListValuedHashMap<>();
 		for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); ++rowNum) {
 			Row row = sheet.getRow(rowNum);
-			String sourceId = dataFormatter.formatCellValue(row.getCell(2));
-			String sourceName = dataFormatter.formatCellValue(row.getCell(3));
-			String sinkId = dataFormatter.formatCellValue(row.getCell(5));
-			String sinkName = dataFormatter.formatCellValue(row.getCell(6));
+			String sourceId = dataFormatter.formatCellValue(row.getCell(1));
+			String sourceName = dataFormatter.formatCellValue(row.getCell(2));
+			String sinkId = dataFormatter.formatCellValue(row.getCell(4));
+			String sinkName = dataFormatter.formatCellValue(row.getCell(5));
 			if (!sourceName.equals("") && !sinkName.equals("")) {
 				graphAdj.put(sourceName, sinkName);
 				graphToMe.put(sinkName, sourceName);

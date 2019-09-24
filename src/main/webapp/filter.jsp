@@ -286,12 +286,12 @@ footer {
 						<div class="col-xs-8 col-sm-8 col-lg-8">
 							<div class="form-check-inline">
 							  <label class="form-check-label">
-							    <input type="radio" class="form-check-input" name="optradio"> Visualization
+							    <input type="radio" id="isGraphVis" class="form-check-input" name="optradio" value="1" checked> Visualization
 							  </label>
 							</div>
 							<div class="form-check-inline">
 							  <label class="form-check-label">
-							    <input type="radio" class="form-check-input" name="optradio"> Callink
+							    <input type="radio" id="isGraphCall" class="form-check-input" name="optradio" value="2"> Callink
 							  </label>
 							</div>
 						</div>
@@ -417,21 +417,36 @@ footer {
 		
 		// call ajax /api/v1.1/filter and call /api/v1.1/graph to show
 		function myDoPost() {
+			
 			$.ajax({
 				type : "POST",
 				url : "api/v1.1/filter",
-				data: { 'uploaded_file' : $('#uploaded_file').val(), 'filters' : filter_lists.join('|')},
+				data: { 'uploaded_file' : $('#uploaded_file').val(), 'filters' : filter_lists.join('|'), 'isGraph' : $("#isGraphCall:checked").val() ? "CALL":"VISUAL"},
 				dataType: "json",
 				  
 				success : function(res) {
-					if (res.status == 0) {
-						// this file always in downloads folder
-						mergeFile = "downloads/" + res.filterFileName;
-						queryGraph(mergeFile);
-						$('#downloadLink').attr('href', 'download?fileName=' + res.filterFileName);
-					} else {
-						alert(res.message);
+					if($("#isGraphCall:checked").val()){
+						console.info(res);
+						var fileName = res.fileName;
+						var data = res.fileDownload;
+						var link = ' <a href="download?fileName=' + res.fileName + '" id="downloadLink" target="_blank"> Download '+ fileName + '</a>';
+						$('#outputDownload').html(link);
+						//Show graph
+						console.info('call',fileName);
+						var values = fileName + ";CALLink"
+						queryGraph(values);
+					}else{
+						if (res.status == 0) {
+							// this file always in downloads folder
+							mergeFile = "downloads/" + res.filterFileName;
+							console.info('visual',mergeFile);
+							queryGraph(mergeFile);
+							$('#downloadLink').attr('href', 'download?fileName=' + res.filterFileName);
+						} else {
+							alert(res.message);
+						}	
 					}
+					
 				},
 				error : function(error) {
 					console.log(error);
@@ -461,9 +476,8 @@ footer {
 			});
 
 			autocomplete(document.getElementById("filter_concept"), concepts);
-
-			build_graph(data);
 			
+			build_graph(data);
 			// default value
 			if (id_values && id_values['filter_concept'])
 				$('#filter_concept').val(id_values['filter_concept']);

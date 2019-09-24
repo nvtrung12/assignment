@@ -51,4 +51,12 @@ public class Constants {
 
 	public static final Function<String, Integer> fNodeHeaderPos = headerName -> Arrays.asList(CONCEPT_HEADER)
 			.indexOf(headerName);
+	
+	public static final String SOURCE_OBJECT_INDEX = "SourceObjectIndex";
+	
+	public static final String[] HEADER_CALLINK = { "LinkID", SOURCE_OBJECT_INDEX, "SourceObject", "InType",
+			"SinkObjectIndex", "InThisObject", "OutType", "CollectionLinkType", "LinkNametoDisplay", "LInkWeight1",
+			"LinkWeigh2" };
+	
+
 }

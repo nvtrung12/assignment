@@ -37,7 +37,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 * @param concepts: table, header removed
 	 * @param connections: table, header removed
 	 */
-	public ContentJSONGraphV2(List<List<String>> concepts, List<List<String>> connections) {
+	public ContentJSONGraphV2(boolean isCall ,List<List<String>> concepts, List<List<String>> connections) {
 		final Function<String, Integer> fConceptPos = hname -> Arrays.asList(Constants.CONCEPT_HEADER).indexOf(hname);
 		int nodeIdPos = fConceptPos.apply(Constants.NODE_ID_HEADER_NAME);
 		int nodeNamePos = fConceptPos.apply(Constants.NODE_NAME_HEADER_NAME);
@@ -51,7 +51,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 				.collect(Collectors.toMap(o -> o.get(nodeIdPos), o -> o.get(displayNamePos),
 						(dnameOld, dnameNew) -> dnameOld + dnameNew));
 
-		buildGraph(concepts, connections, sentMap, new HashSet<>(nodeList));
+		buildGraph(isCall ,concepts, connections, sentMap, new HashSet<>(nodeList));
 	}
 
 	/**
@@ -89,9 +89,9 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 * @param nodeSet: if not full sentence id and concept values than can limit
 	 *        graph (not full nodes and edges)
 	 */
-	public ContentJSONGraphV2(List<List<String>> concepts, List<List<String>> connections,
+	public ContentJSONGraphV2(boolean isCall ,List<List<String>> concepts, List<List<String>> connections,
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
-		buildGraph(concepts, connections, sentencesMap, nodeSet);
+		buildGraph(isCall ,concepts, connections, sentencesMap, nodeSet);
 	}
 
 	/**
@@ -107,10 +107,10 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 *                     concept node (value)
 	 * @param concepts     full list of concept
 	 */
-	private void buildGraph(List<List<String>> concepts, List<List<String>> connections,
+	private void buildGraph(boolean isCall ,List<List<String>> concepts, List<List<String>> connections,
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
 
-		int collLinkPos = fCollectionPos.apply(Constants.COLL_LINK_ID);
+		int collLinkPos = fCollectionPos.apply(isCall ? Constants.SOURCE_OBJECT_INDEX : Constants.COLL_LINK_ID);
 		int collSourcePos = fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 
 		logger.debug("test node set: " + nodeSet.toString());

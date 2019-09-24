@@ -63,8 +63,6 @@ public class GraphApi extends HttpServlet {
 		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
 
 		// get from query
-		String fileName = request.getParameter("fileName");
-		logger.debug("fileName: " + fileName);
 		String graphType = request.getParameter("graphType");
 		logger.debug("graphType: " + graphType);
 
@@ -80,16 +78,28 @@ public class GraphApi extends HttpServlet {
 
 		try {
 			//TODO
-			List<List<String>> connections = XlsxUtil.readFolderXlsx(downloadFolder, Constants.ConnectionSheetName);
+			String fileName = request.getParameter("fileName");
+			String sheetName = Constants.ConnectionSheetName;
+			logger.debug("fileName: " + fileName);
+			boolean isCall = false;
+			String [] arrayHeader = Constants.CONNECT_HEADER;
+			if (fileName.contains(";CALLink")) {
+				isCall = true;
+				String [] lstString = fileName.split(";");
+				fileName = lstString[0];
+				sheetName = lstString[1];
+				arrayHeader = Constants.HEADER_CALLINK;
+			}
+			final String[] arrayData = arrayHeader;
+			List<List<String>> connections = XlsxUtil.readFolderXlsx(downloadFolder, sheetName);
 			List<List<String>> concepts = XlsxUtil.readFolderXlsx(downloadFolder, Constants.ConceptSheetName);
 
 			// remove header
 			connections.remove(0);
 			concepts.remove(0);
 
-			final Function<String, Integer> fConceptPos = headerName -> Arrays.asList(Constants.CONCEPT_HEADER)
-					.indexOf(headerName);
-			final Function<String, Integer> fConnectionPos = headerName -> Arrays.asList(Constants.CONNECT_HEADER)
+			final Function<String, Integer> fConceptPos = headerName -> Arrays.asList(Constants.CONCEPT_HEADER).indexOf(headerName);
+			final Function<String, Integer> fConnectionPos = headerName -> Arrays.asList(arrayData)
 					.indexOf(headerName);
 
 			// keep only number of concept nodes if have in params
@@ -103,7 +113,7 @@ public class GraphApi extends HttpServlet {
 				int nodeIdpos = fConceptPos.apply(Constants.NODE_ID_HEADER_NAME);
 
 				int ypos = fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
-				int linkidPos = fConnectionPos.apply(Constants.COLL_LINK_ID);
+				int linkidPos = isCall ? fConnectionPos.apply(Constants.SOURCE_OBJECT_INDEX) : fConnectionPos.apply(Constants.COLL_LINK_ID);
 				int sourobjPos = fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 
 				int keepNodes = Integer.parseInt(keepNodesStr);
@@ -161,11 +171,11 @@ public class GraphApi extends HttpServlet {
 			IGraph graph = null;
 
 			if (null == graphType || "default".equals(graphType) || "".equals(graphType)) {
-				graph = new ContentJSONGraphV2(concepts, connections);
+				graph = new ContentJSONGraphV2(isCall,concepts, connections);
 			} else if ("mergeSentence".equals(graphType)) {
 				graph = new ContentJSONGraphV2(concepts, connections, threshold);
 			} else { // default
-				graph = new ContentJSONGraphV2(concepts, connections);
+				graph = new ContentJSONGraphV2(isCall ,concepts, connections);
 			}
 
 			String graphjs = graph.getJsonVisjsFormat();
