@@ -306,7 +306,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 				// color, shape must in list
 				if(isCall) {
 					nodes.add(Json.createObjectBuilder().add("id", o.get(nodeIdPos)).add("label", o.get(nodeNamePos))
-							.add("title", titlePre + title + titlePost).add("color", scolor).add("shape", nodeShape)
+							.add("title", titlePre + title + titlePost)
 							.build());
 
 				}else {
