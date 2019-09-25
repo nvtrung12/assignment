@@ -37,7 +37,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 * @param concepts: table, header removed
 	 * @param connections: table, header removed
 	 */
-	public ContentJSONGraphV2(boolean isCall ,List<List<String>> concepts, List<List<String>> connections) {
+	public ContentJSONGraphV2(boolean isOntology,boolean isCall ,List<List<String>> concepts, List<List<String>> connections) {
 		final Function<String, Integer> fConceptPos = hname -> Arrays.asList(Constants.CONCEPT_HEADER).indexOf(hname);
 		int nodeIdPos = fConceptPos.apply(Constants.NODE_ID_HEADER_NAME);
 		int nodeNamePos = fConceptPos.apply(Constants.NODE_NAME_HEADER_NAME);
@@ -51,7 +51,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 				.collect(Collectors.toMap(o -> o.get(nodeIdPos), o -> o.get(displayNamePos),
 						(dnameOld, dnameNew) -> dnameOld + dnameNew));
 
-		buildGraph(isCall ,concepts, connections, sentMap, new HashSet<>(nodeList));
+		buildGraph(isOntology ,isCall ,concepts, connections, sentMap, new HashSet<>(nodeList));
 	}
 
 	/**
@@ -89,9 +89,9 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 * @param nodeSet: if not full sentence id and concept values than can limit
 	 *        graph (not full nodes and edges)
 	 */
-	public ContentJSONGraphV2(boolean isCall ,List<List<String>> concepts, List<List<String>> connections,
+	public ContentJSONGraphV2(boolean isOntology , boolean isCall ,List<List<String>> concepts, List<List<String>> connections,
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
-		buildGraph(isCall ,concepts, connections, sentencesMap, nodeSet);
+		buildGraph(isOntology ,isCall ,concepts, connections, sentencesMap, nodeSet);
 	}
 
 	/**
@@ -107,14 +107,14 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 *                     concept node (value)
 	 * @param concepts     full list of concept
 	 */
-	private void buildGraph(boolean isCall ,List<List<String>> concepts, List<List<String>> connections,
+	private void buildGraph(boolean isOntology ,boolean isCall ,List<List<String>> concepts, List<List<String>> connections,
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
 
-		int collLinkPos = fCollectionPos.apply(isCall ? Constants.SOURCE_OBJECT_INDEX : Constants.COLL_LINK_ID);
-		int collSourcePos = isCall ? fCollectionPos.apply(Constants.SINK_OBJECT_INDEX) :fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
+		int collLinkPos = fCollectionPos.apply(isCall || isOntology ? Constants.SOURCE_OBJECT_INDEX : Constants.COLL_LINK_ID);
+		int collSourcePos = isCall || isOntology ? fCollectionPos.apply(Constants.SINK_OBJECT_INDEX) :fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 		logger.debug("test node set: " + nodeSet.toString());
 
-		buildNodes(isCall, concepts, connections, sentencesMap, nodeSet);
+		buildNodes(isOntology ,isCall, concepts, connections, sentencesMap, nodeSet);
 
 		// keep set edge, if duplication then not re-add
 		// build edges
@@ -167,7 +167,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 			this.mapSentIdMerge.get(k).add(v);
 		}
 
-		buildNodes(false,concepts, connections, sentencesMap, newNodeSet);
+		buildNodes(false ,false,concepts, connections, sentencesMap, newNodeSet);
 
 		// keep set edge, if duplication then not re-add
 		// build edges
@@ -195,11 +195,11 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 * @param sentencesMap
 	 * @param nodeSet
 	 */
-	private void buildNodes(boolean isCall , List<List<String>> concepts, List<List<String>> connections,
+	private void buildNodes(boolean isOntology ,boolean isCall , List<List<String>> concepts, List<List<String>> connections,
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
 
-		int collLinkPos = isCall?fCollectionPos.apply(Constants.SOURCE_OBJECT_INDEX):fCollectionPos.apply(Constants.COLL_LINK_ID);
-		int collSourcePos = isCall ? fCollectionPos.apply(Constants.SINK_OBJECT_INDEX) :fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
+		int collLinkPos = isCall || isOntology ?fCollectionPos.apply(Constants.SOURCE_OBJECT_INDEX):fCollectionPos.apply(Constants.COLL_LINK_ID);
+		int collSourcePos = isCall || isOntology? fCollectionPos.apply(Constants.SINK_OBJECT_INDEX) :fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 		//int collSourcePos = fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 
 		// separated sentence node and concept node
@@ -300,8 +300,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 				String nodeFillColor = fListGetDefault.apply(Constants.NODE_FILL_COLOR, "");
 				String nodeOutlineColor = fListGetDefault.apply(Constants.NODE_OUTLINE_COLOR, "");
 
-				JsonObject scolor = Json.createObjectBuilder().add("background", nodeFillColor)
-						.add("border", nodeOutlineColor).build();
+				
 
 				// color, shape must in list
 				if(isCall) {
@@ -309,7 +308,14 @@ public class ContentJSONGraphV2 extends ContentGraph {
 							.add("title", titlePre + title + titlePost)
 							.build());
 
+				}else if (isOntology) {
+					JsonObject scolor = Json.createObjectBuilder().add("background", nodeFillColor).add("border", nodeOutlineColor).build();
+					nodes.add(Json.createObjectBuilder().add("id", o.get(nodeIdPos)).add("label", o.get(nodeNamePos))
+							.add("title", titlePre + title + titlePost).add("color", scolor).add("shape", nodeShape)
+							.build());
 				}else {
+					JsonObject scolor = Json.createObjectBuilder().add("background", nodeFillColor)
+							.add("border", nodeOutlineColor).build();
 					nodes.add(Json.createObjectBuilder().add("id", o.get(nodeNamePos)).add("label", o.get(nodeNamePos))
 							.add("title", titlePre + title + titlePost).add("color", scolor).add("shape", nodeShape)
 							.build());

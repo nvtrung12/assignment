@@ -358,6 +358,7 @@ footer {
 	<script src="js/semanticGraph.js"></script>
 	<script>
 		var data = ${gr_data};
+		console.info('data',data);
 	</script>
 	<script>
 		var id_values = ${default_id_values};
@@ -454,7 +455,7 @@ footer {
 					} else{
 						if (res.status == 0) {
 							// this file always in downloads folder
-							mergeFile = "downloads/" + res.filterFileName;
+							mergeFile = res.filterFileName;
 							console.info('visual',mergeFile);
 							queryGraph(mergeFile);
 							$('#downloadLink').attr('href', 'download?fileName=' + res.filterFileName);
@@ -493,7 +494,10 @@ footer {
 
 			autocomplete(document.getElementById("filter_concept"), concepts);
 			
-			build_graph(data);
+			if(data){
+				build_graph(data);
+			}
+			
 			// default value
 			if (id_values && id_values['filter_concept'])
 				$('#filter_concept').val(id_values['filter_concept']);
@@ -512,8 +516,9 @@ footer {
 	</script>
 	<script src="js/header.js"></script>
 	<script>
-	setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
-
+	if(document.getElementsByClassName('vis-network') && document.getElementsByClassName('vis-network')[0]) {
+		setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
+		}
 	</script>
 </html>
 

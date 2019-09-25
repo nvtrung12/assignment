@@ -80,9 +80,16 @@ public class GraphApi extends HttpServlet {
 			String sheetName = Constants.ConnectionSheetName;
 			logger.debug("fileName: " + fileName);
 			boolean isCall = false;
+			boolean isOntology = false;
 			String [] arrayHeader = Constants.CONNECT_HEADER;//
-			if (fileName.contains(";CALLink") || fileName.contains(";Ontology")) {
+			if(fileName.contains(";CALLink")) {
 				isCall = true;
+			}
+			if(fileName.contains(";Ontology")) {
+				isOntology =true;
+			}
+			if (isCall || isOntology) {
+				
 				String [] lstString = fileName.split(";");
 				fileName = lstString[0];
 				sheetName = lstString[1];
@@ -114,8 +121,8 @@ public class GraphApi extends HttpServlet {
 				int nodeIdpos = fConceptPos.apply(Constants.NODE_ID_HEADER_NAME);
 
 				int ypos = fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
-				int linkidPos = isCall ? fConnectionPos.apply(Constants.SOURCE_OBJECT_INDEX) : fConnectionPos.apply(Constants.COLL_LINK_ID);
-				int sourobjPos =  isCall ?  fConnectionPos.apply(Constants.SINK_OBJECT_INDEX) :fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
+				int linkidPos = isCall || isOntology ? fConnectionPos.apply(Constants.SOURCE_OBJECT_INDEX) : fConnectionPos.apply(Constants.COLL_LINK_ID);
+				int sourobjPos =  isCall || isOntology ?  fConnectionPos.apply(Constants.SINK_OBJECT_INDEX) :fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 				
 				int keepNodes = Integer.parseInt(keepNodesStr);
 				message = keepNodes > concepts.size() ? "" : "For the large graph, we keep only 200 nodes!";
@@ -172,11 +179,11 @@ public class GraphApi extends HttpServlet {
 			IGraph graph = null;
 
 			if (null == graphType || "default".equals(graphType) || "".equals(graphType)) {
-				graph = new ContentJSONGraphV2(isCall,concepts, connections);
+				graph = new ContentJSONGraphV2(isOntology,isCall,concepts, connections);
 			} else if ("mergeSentence".equals(graphType)) {
 				graph = new ContentJSONGraphV2(concepts, connections, threshold);
 			} else { // default
-				graph = new ContentJSONGraphV2(isCall ,concepts, connections);
+				graph = new ContentJSONGraphV2(isOntology,isCall ,concepts, connections);
 			}
 
 			String graphjs = graph.getJsonVisjsFormat();
