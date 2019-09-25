@@ -1,5 +1,6 @@
 package webservice.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -61,7 +62,7 @@ public class GraphApi extends HttpServlet {
 
 		String appPath = request.getServletContext().getRealPath("/");
 		String downloadFolder = String.format("%s%s", appPath, Constants.DOWNLOAD_FOLDER);
-
+		String fileName = request.getParameter("fileName");
 		// get from query
 		String graphType = request.getParameter("graphType");
 		logger.debug("graphType: " + graphType);
@@ -73,26 +74,26 @@ public class GraphApi extends HttpServlet {
 			this.threshold = 0.8f;
 		}
 
-		// convert to full path
-		//downloadFolder = String.format("%s%s%s", downloadFolder, File.separator, fileName);
-
 		try {
 			//TODO
-			String fileName = request.getParameter("fileName");
+			
 			String sheetName = Constants.ConnectionSheetName;
 			logger.debug("fileName: " + fileName);
 			boolean isCall = false;
-			String [] arrayHeader = Constants.CONNECT_HEADER;
-			if (fileName.contains(";CALLink")) {
+			String [] arrayHeader = Constants.CONNECT_HEADER;//
+			if (fileName.contains(";CALLink") || fileName.contains(";Ontology")) {
 				isCall = true;
 				String [] lstString = fileName.split(";");
 				fileName = lstString[0];
 				sheetName = lstString[1];
 				arrayHeader = Constants.HEADER_CALLINK;
 			}
+			
+			// convert to full path
+			String filePath = String.format("%s%s%s", downloadFolder, File.separator, fileName);
 			final String[] arrayData = arrayHeader;
-			List<List<String>> connections = XlsxUtil.readFolderXlsx(downloadFolder, sheetName);
-			List<List<String>> concepts = XlsxUtil.readFolderXlsx(downloadFolder, Constants.ConceptSheetName);
+			List<List<String>> connections = XlsxUtil.readXlsx(filePath, sheetName);
+			List<List<String>> concepts = XlsxUtil.readXlsx(filePath, Constants.ConceptSheetName);
 
 			// remove header
 			connections.remove(0);
@@ -114,8 +115,8 @@ public class GraphApi extends HttpServlet {
 
 				int ypos = fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 				int linkidPos = isCall ? fConnectionPos.apply(Constants.SOURCE_OBJECT_INDEX) : fConnectionPos.apply(Constants.COLL_LINK_ID);
-				int sourobjPos = fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
-
+				int sourobjPos =  isCall ?  fConnectionPos.apply(Constants.SINK_OBJECT_INDEX) :fConnectionPos.apply(Constants.COLL_SOURCE_OJBECT);
+				
 				int keepNodes = Integer.parseInt(keepNodesStr);
 				message = keepNodes > concepts.size() ? "" : "For the large graph, we keep only 200 nodes!";
 
@@ -132,7 +133,7 @@ public class GraphApi extends HttpServlet {
 				concepts = concepts.stream().filter(o -> nSet.contains(o.get(xpos)) || nSet.contains(o.get(nodeIdpos)))
 						.collect(Collectors.toList());
 				connections = connections.stream()
-						.filter(o -> nSet.contains(o.get(linkidPos)) || nSet.contains(o.get(sourobjPos)))
+						.filter(o -> nSet.contains(o.get(linkidPos)) || nSet.contains(o.get(ypos)))
 						.collect(Collectors.toList());
 
 				// keep only keepNodes in concepts

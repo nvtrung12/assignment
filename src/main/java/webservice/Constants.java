@@ -53,9 +53,10 @@ public class Constants {
 			.indexOf(headerName);
 	
 	public static final String SOURCE_OBJECT_INDEX = "SourceObjectIndex";
+	public static final String SINK_OBJECT_INDEX = "SinkObjectIndex";
 	
 	public static final String[] HEADER_CALLINK = { "LinkID", SOURCE_OBJECT_INDEX, "SourceObject", "InType",
-			"SinkObjectIndex", "InThisObject", "OutType", "CollectionLinkType", "LinkNametoDisplay", "LInkWeight1",
+			SINK_OBJECT_INDEX, "InThisObject", "OutType", "CollectionLinkType", "LinkNametoDisplay", "LInkWeight1",
 			"LinkWeigh2" };
 	
 

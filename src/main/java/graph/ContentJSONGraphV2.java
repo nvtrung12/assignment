@@ -111,11 +111,10 @@ public class ContentJSONGraphV2 extends ContentGraph {
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
 
 		int collLinkPos = fCollectionPos.apply(isCall ? Constants.SOURCE_OBJECT_INDEX : Constants.COLL_LINK_ID);
-		int collSourcePos = fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
-
+		int collSourcePos = isCall ? fCollectionPos.apply(Constants.SINK_OBJECT_INDEX) :fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 		logger.debug("test node set: " + nodeSet.toString());
 
-		buildNodes(concepts, connections, sentencesMap, nodeSet);
+		buildNodes(isCall, concepts, connections, sentencesMap, nodeSet);
 
 		// keep set edge, if duplication then not re-add
 		// build edges
@@ -132,6 +131,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 					.build();
 			this.edges.add(edge);
 		}
+		
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class ContentJSONGraphV2 extends ContentGraph {
 			this.mapSentIdMerge.get(k).add(v);
 		}
 
-		buildNodes(concepts, connections, sentencesMap, newNodeSet);
+		buildNodes(false,concepts, connections, sentencesMap, newNodeSet);
 
 		// keep set edge, if duplication then not re-add
 		// build edges
@@ -195,11 +195,12 @@ public class ContentJSONGraphV2 extends ContentGraph {
 	 * @param sentencesMap
 	 * @param nodeSet
 	 */
-	private void buildNodes(List<List<String>> concepts, List<List<String>> connections,
+	private void buildNodes(boolean isCall , List<List<String>> concepts, List<List<String>> connections,
 			Map<String, String> sentencesMap, Set<String> nodeSet) {
 
-		int collLinkPos = fCollectionPos.apply(Constants.COLL_LINK_ID);
-		int collSourcePos = fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
+		int collLinkPos = isCall?fCollectionPos.apply(Constants.SOURCE_OBJECT_INDEX):fCollectionPos.apply(Constants.COLL_LINK_ID);
+		int collSourcePos = isCall ? fCollectionPos.apply(Constants.SINK_OBJECT_INDEX) :fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
+		//int collSourcePos = fCollectionPos.apply(Constants.COLL_SOURCE_OJBECT);
 
 		// separated sentence node and concept node
 		List<String> sentIdNodes = nodeSet.stream().filter(o -> null != sentencesMap.get(o))
@@ -303,10 +304,18 @@ public class ContentJSONGraphV2 extends ContentGraph {
 						.add("border", nodeOutlineColor).build();
 
 				// color, shape must in list
-				nodes.add(Json.createObjectBuilder().add("id", o.get(nodeNamePos)).add("label", o.get(nodeNamePos))
-						.add("title", titlePre + title + titlePost).add("color", scolor).add("shape", nodeShape)
-						.build());
+				if(isCall) {
+					nodes.add(Json.createObjectBuilder().add("id", o.get(nodeIdPos)).add("label", o.get(nodeNamePos))
+							.add("title", titlePre + title + titlePost).add("color", scolor).add("shape", nodeShape)
+							.build());
 
+				}else {
+					nodes.add(Json.createObjectBuilder().add("id", o.get(nodeNamePos)).add("label", o.get(nodeNamePos))
+							.add("title", titlePre + title + titlePost).add("color", scolor).add("shape", nodeShape)
+							.build());
+
+				}
+				
 				this.metaInfo.add(o.get(nodeNamePos),
 						Json.createObjectBuilder().add("title", title).add("isSentence", true).build());
 

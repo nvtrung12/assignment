@@ -294,6 +294,11 @@ footer {
 							    <input type="radio" id="isGraphCall" class="form-check-input" name="optradio" value="2"> Callink
 							  </label>
 							</div>
+							<div class="form-check-inline">
+							  <label class="form-check-label">
+							    <input type="radio" id="isGraphOntology" class="form-check-input" name="optradio" value="3"> Ontology
+							  </label>
+							</div>
 						</div>
 						<br></br><br></br>
 					</div>
@@ -328,7 +333,7 @@ footer {
 	<br />
 	<br />
 	<br />
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-sm-12 col-lg-12">
 				<div class="ConceptVisualization">
@@ -421,21 +426,32 @@ footer {
 			$.ajax({
 				type : "POST",
 				url : "api/v1.1/filter",
-				data: { 'uploaded_file' : $('#uploaded_file').val(), 'filters' : filter_lists.join('|'), 'isGraph' : $("#isGraphCall:checked").val() ? "CALL":"VISUAL"},
+				data: { 
+					'uploaded_file' : $('#uploaded_file').val(), 
+					'filters' : filter_lists.join('|'), 
+					'isGraph' : $("#isGraphCall:checked").val() || $("#isGraphOntology:checked").val() ? "CALL": "VISUAL"
+				},
 				dataType: "json",
 				  
 				success : function(res) {
 					if($("#isGraphCall:checked").val()){
-						console.info(res);
 						var fileName = res.fileName;
 						var data = res.fileDownload;
 						var link = ' <a href="download?fileName=' + res.fileName + '" id="downloadLink" target="_blank"> Download '+ fileName + '</a>';
 						$('#outputDownload').html(link);
 						//Show graph
-						console.info('call',fileName);
 						var values = fileName + ";CALLink"
 						queryGraph(values);
-					}else{
+					} else if($("#isGraphOntology:checked").val()){
+						var fileName = res.fileName;
+						var data = res.fileDownload;
+						var link = ' <a href="download?fileName=' + res.fileName + '" id="downloadLink" target="_blank"> Download '+ fileName + '</a>';
+						$('#outputDownload').html(link);
+						//Show graph
+						var values = fileName + ";Ontology"
+						queryGraph(values);
+						
+					} else{
 						if (res.status == 0) {
 							// this file always in downloads folder
 							mergeFile = "downloads/" + res.filterFileName;
@@ -495,5 +511,9 @@ footer {
 		});
 	</script>
 	<script src="js/header.js"></script>
+	<script>
+	setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
+
+	</script>
 </html>
 
