@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,10 @@ public class BayesianUtils {
 	 * @throws InvalidFormatException
 	 * @throws EncryptedDocumentException
 	 */
+	
+	private static String minus(String question) {
+		return String.format("%s%s", "-", question);
+	}
 	public static Map<String, Object> loadSimpleNetworkFormat(Workbook workbook, String sheetName,
 			String sheetParam, String sheetAllNodes)
 			throws EncryptedDocumentException, InvalidFormatException, IOException {
@@ -45,12 +50,29 @@ public class BayesianUtils {
 		DataFormatter dataFormatter = new DataFormatter();
 
 		Map<String, Double> prob = new HashMap<>();
+		Set<String> questionParam = new HashSet<>();
 		Row r1 = sheetP.getRow(0);
 		Row r2 = sheetP.getRow(1);
+		Row r3 = sheetP.getRow(3);
+		Row r4 = sheetP.getRow(4);
 		for (int i = r1.getFirstCellNum(); i < r1.getLastCellNum(); ++i) {
 			prob.put(dataFormatter.formatCellValue(r1.getCell(i)),
 					Double.parseDouble(dataFormatter.formatCellValue(r2.getCell(i))));
 		}
+		
+		for (int i = r3.getFirstCellNum(); i < r3.getLastCellNum(); ++i) {
+			String columntitle = dataFormatter.formatCellValue(r4.getCell(i));
+			String columnValue = dataFormatter.formatCellValue(r3.getCell(i));
+			if ("1".equals(columntitle)) {
+				questionParam.add(columnValue);
+			} else if ("0".equals(columntitle)) {
+				questionParam.add(minus(columnValue));
+			} else {
+				
+			}
+		}
+		
+		
 
 		// store graph with adj format
 		// vi -> list of adj
@@ -106,6 +128,7 @@ public class BayesianUtils {
 		ret.put("allNode", allNode);
 		ret.put("collections", element);
 		ret.put("workbook", workbook);
+		ret.put("questionParam", questionParam);
 		return ret;
 	}
 	

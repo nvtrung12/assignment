@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +112,9 @@ public class ProbabilatyProcess {
 		Map<String, Object> kwargs = (Map<String, Object>) out.get("prob");
 		Map<String, String> allNodes = (Map<String, String>) out.get("allNode");
 		Map<String, String> collections = (Map<String, String>) out.get("collections");
-
+		Set<String> questionParam = (Set<String>) out.get("questionParam");
+		
+		
 		Set<String> qs = new HashSet<>();// Arrays.asList("Q1", "Q2")
 		Set<String> cs = new HashSet<>();// Arrays.asList("C1", "C2", "C3", "C4", "C5")
 
@@ -127,7 +130,8 @@ public class ProbabilatyProcess {
 					}
 			});
 		});
-
+		if(questionParam.size() != qs.size()) return "Lỗi nhập param không đủ số câu hỏi";
+		
 		// a k m n
 		QCBayesianNetwork qcbn = new QCBayesianNetwork(outNodes, inNodes, qs, cs, kwargs);
 		// {Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], C1=[C3, C4], C2=[C4]}
@@ -140,58 +144,64 @@ public class ProbabilatyProcess {
 		for (String string : qs) {
 			str = str + string;
 		}
-		List<Set<String>> rs = calculatePermutation(str);
+		
+		//List<Set<String>> rs = calculatePermutation(str);
 		// [[-Q1, -Q2], [Q2, -Q1], [Q1, -Q2], [Q1, Q2]]
-
+		
 		// create sheet new and write file
 		String sheetProName = "Probability";
 
 		Sheet sheetPro = workbook.getSheet(sheetProName);
 		if (sheetPro == null) {
-			// create
 			sheetPro = workbook.createSheet(sheetProName);
 		}
+		// add title header row0
+		List<String> title = new ArrayList<>() ;
+		title.add("NodeName");
+		for (String question : qs) {
+			title.add(question);
+		}
+		String[] StringTitle = { "Probability", "Bloom level", "Value" };//
+		for (String string : StringTitle) {
+			title.add(string);
+		}
+		Row headerTitle = sheetPro.createRow(0);
+		for (int i = 0; i < title.size(); i++) {
+			Cell cell1 = headerTitle.createCell(i);
+			cell1.setCellValue(title.get(i));
+		}
+		//row1 cell0
+		//questionParam [Q1,-Q2]
+		String[] arrayParam = questionParam.stream().toArray(String[]::new);
 		int j = 0;
-		String[] title = { "Probability", "Bloom level", "Value" };
-		Row headerTitle = sheetPro.createRow(j);
-		for (int i = 0; i < 3; i++) {
-			Cell cell1 = headerTitle.createCell(i+1);
-			cell1.setCellValue(title[i]);
-		}
-		
-		for (String ss : cs) {
-			for (Set<String> g : rs)
-				try {
-					j++;
-//					XlsxUtil.writeRowXlsx(sheetPro, i, row_data)
-					Row headerRow = sheetPro.createRow(j);
-
-					String data = String.format("P(%s|%s) ", ss, g);
-					// Cell cell = headerRow.createCell(i);
-					Cell cell1 = headerRow.createCell(1);
-					cell1.setCellValue(data);
-					Cell cell2 = headerRow.createCell(2);
-					cell2.setCellValue(1);
-					Cell cell3 = headerRow.createCell(3);
-					cell3.setCellValue(qcbn.p(ss, g));
-//					 for(int i = 1; i <= 3; i++) {
-//				            Cell cell = headerRow.createCell(i);
-//				            cell.setCellValue(data);
-//				            
-//				        }
-
-					//System.out.println(String.format("P(%s|%s)=%s ", ss, g, qcbn.p(ss, g)));
-				} catch (Exception e) {
-					System.out.println(e);
-					throw e;
+		for (String ss : cs) {// Arrays.asList("C1", "C2", "C3", "C4", "C5")
+			j++;
+			Row headerRow = sheetPro.createRow(j);
+			Cell node = headerRow.createCell(0);
+			node.setCellValue(ss);
+			for (int i = 1; i < title.size() - StringTitle.length; i++) {
+				Cell cellQuestion = headerRow.createCell(i);
+				if(title.get(i).equals(arrayParam[i-1])) {
+					cellQuestion.setCellValue(1);
+				}else {
+					cellQuestion.setCellValue(0);
 				}
+			}
+			int k=0;
+			for (int i = arrayParam.length + 1; i < title.size(); i++) {
+				Cell cellFinal = headerRow.createCell(i);
+				if(k==0) {
+					String data = String.format("P(%s|%s) ", ss, questionParam.toString());
+					cellFinal.setCellValue(data);
+				}else if (k==1) {
+					cellFinal.setCellValue(1);
+				}else {
+					cellFinal.setCellValue(qcbn.p(ss, questionParam));
+				}
+				k++;
+			}
 		}
 
-//		System.out.println();
-//		System.out.println(String.format("l* = P(%s|%s)=%s ", "-C1", "Q1", qcbn.p("-C1", toSet("Q1"))));
-//		System.out.println(String.format("l* = P(%s|%s)=%s ", "-C2", "Q1", qcbn.p("-C2", toSet("Q1"))));
-//		System.out.println(String.format("l* = P(%s|%s)=%s ", "-C2", "Q2", qcbn.p("-C2", toSet("Q2"))));
-		// qcbn.printTest();
 		FileOutputStream fileOut = new FileOutputStream(downloadFile + fileName);
 		workbook.write(fileOut);
 		fileOut.close();

@@ -102,7 +102,7 @@ public class TestBayesianNetwork1 {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 
-		final String fileName = "tmp/inputtest1.xlsx";
+		final String fileName = "tmp/trung99.xlsx";
 		final String sheetName = "CALLink";
 		final String sheetParam = "Para";
 		final String sheetAllNodes = "AllNodes";
