@@ -54,13 +54,14 @@ public class Utils {
 			try {
 				fileName = Utils.getFileName(part);
 				if (!"".equals(fileName)) {
+					String fileN = fileName.substring(0,fileName.indexOf("."));
 					String uuid = UUID.randomUUID().toString().replace("-", "");
-					String internalFileName = String.format("%s/%s.%s", uploadFolder, uuid, fileName);
+					String internalFileName = String.format("%s/%s.%s", uploadFolder, fileN, uuid+".xlsx");
 					System.out.println("write for " + fileName);
 					part.write(internalFileName);
 
 					// only save if success uploaded (in case of empty upload)
-					Pair<String, String> pair = Pair.of(fileName, String.format("%s.%s", uuid, fileName));
+					Pair<String, String> pair = Pair.of(fileName, String.format("%s.%s", fileN, uuid+".xlsx"));
 					fileNames.add(pair);
 				}
 			} catch (Exception e) {

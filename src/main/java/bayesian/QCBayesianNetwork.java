@@ -200,45 +200,72 @@ public class QCBayesianNetwork {
 		// P(C..|-Qj) = m
 		// P(C1C2|-Q1) = m
 		// P(C2|-Q2) = m
-		put("C1", getNeg("Q1"), Math.sqrt(m));
-		put("C2", getNeg("Q1"), Math.sqrt(m));
-
-		put("C2", getNeg("Q2"), m);
-
-		// ?
-		put("C3", getNeg("C1"), sqrt(n));
-		put("C4", getNeg("C1"), sqrt(n));
-
-		put("C4", getNeg("C2"), n);
-
-		put("C5", getNeg("C3"), n);
-		put("C5", getNeg("C4"), n);
+//		put("C1", getNeg("Q1"), Math.sqrt(m));
+//		put("C2", getNeg("Q1"), Math.sqrt(m));
+//
+//		put("C2", getNeg("Q2"), m);
+//
+//		// ?
+//		put("C3", getNeg("C1"), sqrt(n));
+//		put("C4", getNeg("C1"), sqrt(n));
+//
+//		put("C4", getNeg("C2"), n);
+//
+//		put("C5", getNeg("C3"), n);
+//		put("C5", getNeg("C4"), n);
 		
-		
-		//{Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], C5=[], C1=[C3, C4], C2=[C4]}
-		//incode {C3=[C1], Q1=[], C4=[C1, C2], Q2=[], C5=[C3, C4], C1=[Q1], C2=[Q1, Q2]}
-//		this.inNodes.forEach((key,value)->{
-//			value.forEach(s->{
-//				boolean isQuestion = false;
-//				for (String qu : questionNodes) {
-//					if (s.equals(qu)) {
-//						isQuestion = true;
-//						break;
-//					}
-//				}
-//				
-//				if (isQuestion) {
-//					//m
-//					
-////					System.out.println("question "+ key+" "+s);
-////					put(key, getNeg(s),Math.sqrt(m));
-//				}else {
-//					//n
-////					System.out.println("no question "+ key+" "+s);
-////					put(key, getNeg(s),Math.sqrt(n));
-//				}
-//			});
-//		});
+		//conceptNodes [C3, C4, C5, C1, C2]
+		//innode {C3=[C1], Q1=[], C4=[C1, C2], Q2=[], C5=[C3, C4], C1=[Q1], C2=[Q1, Q2]}
+		//{C3=[C1], Q1=[], C4=[C1, C2], Q2=[], C5=[C3, C4], Q3=[], C1=[Q1, Q3], C2=[Q1, Q2]}
+		//outnote {Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], C5=[], C1=[C3, C4], C2=[C4]}
+		//{Q1=[C1, C2], C3=[C5], Q2=[C2], C4=[C5], Q3=[C1], C5=[], C1=[C3, C4], C2=[C4]}
+
+
+		this.inNodes.forEach((key,value)->{
+			System.out.println(key+"::::"+value);
+			value.forEach(s->{
+				boolean isQuestion = false;
+				for (String qu : questionNodes) {
+					if (s.equals(qu)) {
+						isQuestion = true;
+						break;
+					}
+				}
+				System.out.println(s);
+				System.out.println(isQuestion);
+				if (isQuestion) {
+					//m Map<String, Set<String>> outNodes;
+					this.outNodes.forEach((ke,va)->{
+						System.out.println(ke);
+						if(s.equals(ke)) {
+							int num = va.size();
+							if (num == 0 || num == 1) {
+								put(key, getNeg(s),m);
+							}else {
+								put(key, getNeg(s), Math.pow(m, ((double)1/num)));
+							}
+							
+						}
+					});
+
+				}else {
+					//n
+					this.outNodes.forEach((ke,va)->{
+						System.out.println(ke);
+						if(s.equals(ke)) {
+							int num = va.size();
+							if (num == 0 || num == 1) {
+								put(key, getNeg(s),n);
+							}else {
+								put(key, getNeg(s), Math.pow(n, ((double)1/num)));
+							}
+							
+						}
+					});
+					
+				}
+			});
+		});
 
 		// calculate and cache all adjective node
 		for (String node : nodes) {

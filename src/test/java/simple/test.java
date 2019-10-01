@@ -48,11 +48,7 @@ public class test {
 	}
 
 	public static void main(String[] args) {
-		List<String> lstString = new ArrayList<>();
-		lstString.add("a");
-		lstString.add("b");
-		lstString.add("c");
-		System.out.println(lstString.get(0));
+		System.out.println(Math.pow(8, ((double)1/2)));
 	}
 
 }

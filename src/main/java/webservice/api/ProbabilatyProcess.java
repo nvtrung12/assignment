@@ -130,7 +130,7 @@ public class ProbabilatyProcess {
 					}
 			});
 		});
-		if(questionParam.size() != qs.size()) return "Lỗi nhập param không đủ số câu hỏi";
+		//if(questionParam.size() != qs.size()) return "Lỗi nhập param không đủ số câu hỏi";
 		
 		// a k m n
 		QCBayesianNetwork qcbn = new QCBayesianNetwork(outNodes, inNodes, qs, cs, kwargs);
