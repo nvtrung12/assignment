@@ -356,14 +356,16 @@ footer {
 	<script src="js/jsupload.js"></script>
 	<script src="js/util.js"></script>
 	<script src="js/semanticGraph.js"></script>
-	<script>
+	<!-- <script>
 		var data = ${gr_data};
 		console.info('data',data);
 	</script>
 	<script>
 		var id_values = ${default_id_values};
-	</script>
+	</script> -->
 	<script>
+		var data = ${gr_data};
+		var id_values = ${default_id_values};
 		var concepts = [ "computer", "os" ];
 		var filter_lists = []; // contains the list of filters 
 		var server_file = null; // if have is a string, a file name that uploaded to server, can be reused 
@@ -496,7 +498,7 @@ footer {
 			
 			if(data){
 				build_graph(data);
-			}
+			} 
 			
 			// default value
 			if (id_values && id_values['filter_concept'])

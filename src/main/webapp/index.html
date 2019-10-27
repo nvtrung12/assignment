@@ -350,7 +350,8 @@
 	</body>
 	</html>
 	
-	<script>
-	setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
-
+	<script type="text/javascript">
+	if(document.getElementsByClassName('vis-network') && document.getElementsByClassName('vis-network')[0]) {
+		setInterval(function(){ 	document.getElementsByClassName('vis-network')[0].childNodes[0].style.height = '400px' }, 1000);
+		}
 	</script>

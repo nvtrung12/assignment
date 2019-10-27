@@ -173,34 +173,42 @@ public class ProbabilatyProcess {
 		//row1 cell0
 		//questionParam [Q1,-Q2]
 		String[] arrayParam = questionParam.stream().toArray(String[]::new);
+		
+		int numLevel = 6;
 		int j = 0;
-		for (String ss : cs) {// Arrays.asList("C1", "C2", "C3", "C4", "C5")
-			j++;
-			Row headerRow = sheetPro.createRow(j);
-			Cell node = headerRow.createCell(0);
-			node.setCellValue(ss);
-			for (int i = 1; i < title.size() - StringTitle.length; i++) {
-				Cell cellQuestion = headerRow.createCell(i);
-				if(title.get(i).equals(arrayParam[i-1])) {
-					cellQuestion.setCellValue(1);
-				}else {
-					cellQuestion.setCellValue(0);
+		
+		for (int l = 0; l < numLevel; l++) {
+			for (String ss : cs) {// Arrays.asList("C1", "C2", "C3", "C4", "C5")
+				j++;
+				Row headerRow = sheetPro.createRow(j);
+				Cell node = headerRow.createCell(0);
+				node.setCellValue(ss);
+				for (int i = 1; i < title.size() - StringTitle.length; i++) {
+					Cell cellQuestion = headerRow.createCell(i);
+					if(title.get(i).equals(arrayParam[i-1])) {
+						cellQuestion.setCellValue(1);
+					}else {
+						cellQuestion.setCellValue(0);
+					}
 				}
-			}
-			int k=0;
-			for (int i = arrayParam.length + 1; i < title.size(); i++) {
-				Cell cellFinal = headerRow.createCell(i);
-				if(k==0) {
-					String data = String.format("P(%s|%s) ", ss, questionParam.toString());
-					cellFinal.setCellValue(data);
-				}else if (k==1) {
-					cellFinal.setCellValue(1);
-				}else {
-					cellFinal.setCellValue(qcbn.p(ss, questionParam));
+				int k=0;
+				for (int i = arrayParam.length + 1; i < title.size(); i++) {
+					Cell cellFinal = headerRow.createCell(i);
+					if(k==0) {
+						//TODO 6 level
+						
+						String data = String.format("P(%s|%s) ", ss, questionParam.toString());
+						cellFinal.setCellValue(data);
+					}else if (k==1) {
+						cellFinal.setCellValue(l);
+					}else {
+						cellFinal.setCellValue(qcbn.p(ss, questionParam));
+					}
+					k++;
 				}
-				k++;
 			}
 		}
+		
 
 		FileOutputStream fileOut = new FileOutputStream(downloadFile + fileName);
 		workbook.write(fileOut);

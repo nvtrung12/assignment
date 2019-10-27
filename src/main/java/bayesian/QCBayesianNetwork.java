@@ -435,6 +435,7 @@ public class QCBayesianNetwork {
 	 * @throws Exception
 	 */
 	public double p(String A, Set<String> given) throws Exception {
+		System.out.println(A +":::"+given);
 		String s = String.format("P(%s|%s)", A, given.toString());
 //		this.printTest();
 		logger.debug(s);
@@ -551,6 +552,7 @@ public class QCBayesianNetwork {
 
 				// P(A|B) = Sum(P(A|X) * P(X|B)) for X , -X in path A-B
 				String negX = getNeg(X);
+				System.out.println(X);
 				double pabx = p(A, toSet(X)) * p(X, given);
 
 				double pabnx = p(A, toSet(negX)) * p(negX, given);

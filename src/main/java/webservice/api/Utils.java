@@ -54,7 +54,8 @@ public class Utils {
 			try {
 				fileName = Utils.getFileName(part);
 				if (!"".equals(fileName)) {
-					String fileN = fileName.substring(0,fileName.indexOf("."));
+					//TODO
+					String fileN = fileName.substring(0,fileName.lastIndexOf("."));
 					String uuid = UUID.randomUUID().toString().replace("-", "");
 					String internalFileName = String.format("%s/%s.%s", uploadFolder, fileN, uuid+".xlsx");
 					System.out.println("write for " + fileName);

@@ -48,7 +48,8 @@ public class test {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(Math.pow(8, ((double)1/2)));
+		long aa =654;
+		System.out.println(aa*(-1));
 	}
 
 }
