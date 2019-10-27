@@ -253,11 +253,7 @@ public class XlsxUtil {
 	 */
 	public static List<List<String>> readXlsx(String filePath, String sheetName) throws Exception {
 		File newFile = new File(filePath);
-		boolean isDirectory = false;
-		if(newFile.isDirectory()) {
-			isDirectory =true;
-		}
-		if(isDirectory) return readFolderXlsx(filePath, sheetName);
+		if(newFile.isDirectory()) return readFolderXlsx(filePath, sheetName);
 		
 		Workbook workbook = WorkbookFactory.create(newFile, null, true);
 
